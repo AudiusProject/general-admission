@@ -27,6 +27,7 @@
     "ts-lint": "^4.5.1"
   },
   "dependencies": {
+    "@audius/libs": "^0.8.1",
     "express": "^4.17.1",
     "handlebars": "^4.1.2",
     "typescript": "^3.5.3"
