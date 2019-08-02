@@ -1,6 +1,10 @@
 # build
 build
 
+# deps
+node_modules
+package-lock.json
+
 # misc
 .DS_Store
 *.swp
