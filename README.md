@@ -1,7 +1,6 @@
-# general-admission
-Audius frontend gateway for proxying traffic 
+<img src="https://user-images.githubusercontent.com/2731362/62400456-224e6280-b534-11e9-82c4-3b04175d4e01.png" alt="drawing" width="400"/>
 
-Buy a ticket:
+Audius frontend gateway for proxying traffic 
 
 ```
 git clone git@github.com:AudiusProject/general-admission.git
@@ -10,7 +9,9 @@ cd general-admission
 docker-compose up --build
 ```
 
-and to stop it
+visit http://localhost:9000.
+
+and to stop it:
 
 ```
 docker-compose down
