@@ -1,0 +1,22 @@
+server {
+  listen 80;
+  listen [::]:80;
+
+  root /var/www/html;
+  index index.html index.htm index.nginx-debian.html;
+
+  location / {
+    set $is_crawler 0;
+
+    if ($http_user_agent ~* "${CRAWLERS}") {
+      set $is_crawler 1;
+    }
+
+    if ($is_crawler = 1) {
+      proxy_pass http://node:8000;
+    }
+    if ($is_crawler = 0) {
+      proxy_pass ${APP_URL};
+    }
+  }
+}

@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "9000:80"
+    volumes:
+      - ./nginx.template:/etc/nginx/conf.d/nginx.template
+      - ./crawlers.txt:/home/crawlers.txt
+      - ./nginx.sh:/home/nginx.sh
+    env_file:
+      - .env
+    depends_on:
+      - node
+    command: sh -c /home/nginx.sh
+
+  node:
+    image: nodejs:alpine
+    ports:
+      - "9001:8000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node
+    restart: unless-stopped
