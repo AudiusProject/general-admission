@@ -42,7 +42,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run: npm run test:staging
+      - run:
+          name: run test
+          command: npm run test:staging
 
   test-production:
     working_directory: ~/general-admission
@@ -52,15 +54,21 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run: npm run test:production
+      - run:
+          name: run test
+          command: npm run test:production
 
 workflows:
   version: 2
   test:
     jobs:
       - init
-      - test-staging
-      - test-production
+      - test-staging:
+          requires:
+            - init
+      - test-production:
+          requires:
+            - init
 
   staging:
     triggers:
@@ -72,7 +80,9 @@ workflows:
                 - master
     jobs:
       - init
-      - test-staging
+      - test-staging:
+          requires:
+            - init
 
   production:
     triggers:
@@ -84,4 +94,6 @@ workflows:
                 - master
     jobs:
       - init
-      - test-production
+      - test-production:
+          requires:
+            - init
