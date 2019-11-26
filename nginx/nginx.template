@@ -24,8 +24,8 @@ http {
   }
 
   server {
-    listen 80;
-    listen [::]:80;
+    listen 443;
+    listen [::]:443;
 
     root /var/www/html;
     index index.html index.htm index.nginx-debian.html;
