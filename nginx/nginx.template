@@ -19,6 +19,13 @@ http {
   server {
     listen 80;
     listen [::]:80;
+    server_name audius.co www.audius.co; 
+    return 301 https://audius.co$request_uri;
+  }
+
+  server {
+    listen 80;
+    listen [::]:80;
 
     root /var/www/html;
     index index.html index.htm index.nginx-debian.html;
