@@ -14,12 +14,13 @@ http {
   proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
   proxy_set_header  X-Forwarded-Proto $scheme;
   proxy_set_header X-internal-access-token ${ACCESS_TOKEN};
+  proxy_set_header X-SSL-CERT $ssl_client_escaped_cert;
   proxy_pass_header Authorization;
 
   server {
     listen 80;
     listen [::]:80;
-    server_name audius.co www.audius.co; 
+    server_name _; 
     return 301 https://audius.co$request_uri;
   }
 
