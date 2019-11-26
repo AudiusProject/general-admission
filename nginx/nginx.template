@@ -18,11 +18,10 @@ http {
   proxy_pass_header Authorization;
 
   server {
-    listen 80;
-    listen [::]:80;
-    server_name _; 
-    return 301  https://$host$request_uri;
-  }
+    listen 80 default_server;
+    server_name _;
+    return 301 https://$host$request_uri;
+}
 
   server {
     listen 443;
