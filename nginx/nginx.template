@@ -40,7 +40,7 @@ http {
         application/json;
 
     location /apple-app-site-association {
-      return 404;
+      proxy_pass ${APP_URL};
     }
 
     location / {
