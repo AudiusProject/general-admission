@@ -12,6 +12,10 @@ services:
     depends_on:
       - node
     command: sh -c /home/nginx/nginx.sh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "512m"
 
   node:
     image: nodejs:alpine
@@ -22,3 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: node
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "512m"
