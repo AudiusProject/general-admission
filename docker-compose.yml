@@ -13,9 +13,8 @@ services:
       - node
     command: sh -c /home/nginx/nginx.sh
     logging:
-      driver: "json-file"
       options:
-        max-size: "512m"
+        max-size: 1g
 
   node:
     image: nodejs:alpine
@@ -27,6 +26,5 @@ services:
     container_name: node
     restart: unless-stopped
     logging:
-      driver: "json-file"
       options:
-        max-size: "512m"
+        max-size: 1g
