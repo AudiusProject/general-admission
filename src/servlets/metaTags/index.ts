@@ -144,7 +144,7 @@ const getResponse = async (
       context = getDefaultContext()
   }
 
-  context.appUrl = req.url
+  context.appUrl = `audius://${req.url}`
 
   const html = template(context)
   return res.send(html)
