@@ -21,10 +21,9 @@ export const getCoverArt = (trackOrPlaylist: any, user: any) => {
 
 /**
  * Formats a URL name for routing.
- *  Removes reserved URL characters
- *  Replaces white space with -
- *  Lower cases
- * @param {string} name
+ *  - Removes reserved URL characters
+ *  - Replaces white space with -
+ *  - Lower cases
  */
 export const formatUrlName = (name: string): string => {
   if (!name) return ''
