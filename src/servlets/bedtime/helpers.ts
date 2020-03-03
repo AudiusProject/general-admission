@@ -19,17 +19,34 @@ export const getCoverArt = (trackOrPlaylist: any, user: any) => {
   return getImageUrl(coverArtCID, gateway)
 }
 
+/**
+ * Formats a URL name for routing.
+ *  Removes reserved URL characters
+ *  Replaces white space with -
+ *  Lower cases
+ * @param {string} name
+ */
+export const formatUrlName = (name: string): string => {
+  if (!name) return ''
+  return name
+    .replace(/!|%|#|\$|&|'|\(|\)|&|\*|\+|,|\/|:|;|=|\?|@|\[|\]/g, '')
+    .replace(/\s+/g, '-')
+    // Reduce repeated `-` to a single `-`
+    .replace(/-+/g, '-')
+    .toLowerCase()
+}
+
 export const getTrackPath = ({
   routeId,
   trackId
 }: {
   routeId: string,
   trackId: number
-}) => (encodeURI(`${routeId}-${trackId}`))
+}) => encodeURIComponent(formatUrlName((`${routeId}-${trackId}`)))
 
 export const getCollectionPath = ({ ownerHandle, isAlbum, name, id }: {
   ownerHandle: string,
   isAlbum: boolean,
   name: string,
   id: number
-}) => (encodeURI(`${ownerHandle}/${isAlbum ? 'album' : 'playlist'}/${name}-${id}`))
+}) => encodeURIComponent(formatUrlName((`${ownerHandle}/${isAlbum ? 'album' : 'playlist'}/${name}-${id}`)))
