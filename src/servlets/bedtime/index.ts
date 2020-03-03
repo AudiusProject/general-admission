@@ -16,7 +16,7 @@ const getTrackMetadata = async (trackId: number, ownerId: number): Promise<GetTr
 
     const user  = await getUser(ownerId)
     const coverArt = getCoverArt(track, user)
-    const urlPath = getTrackPath({ routeId: track.route_id, trackId: track.track_id })
+    const urlPath = getTrackPath({ ownerHandle: user.handle, title: track.title, id: track.track_id })
 
     return {
       title: track.title,
