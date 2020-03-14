@@ -21,7 +21,7 @@ const template = handlebars.compile(
     .toString()
 )
 
-const getTrackContext = async (id: number): Promise<Context> => {
+const getTrackContext = async (id: number, canEmbed: boolean): Promise<Context> => {
   if (!id) return getDefaultContext()
   try {
     const track = await getTrack(id)
@@ -35,7 +35,7 @@ const getTrackContext = async (id: number): Promise<Context> => {
       title: `${track.title} • ${user.name}`,
       description: track.description || '',
       image: getImageUrl(coverArt, gateway),
-      embed: true,
+      embed: canEmbed,
       embedUrl: getEmbedUrl(Playable.TRACK, track.track_id, track.owner_id)
     }
   } catch (e) {
@@ -43,7 +43,7 @@ const getTrackContext = async (id: number): Promise<Context> => {
   }
 }
 
-const getCollectionContext = async (id: number): Promise<Context> => {
+const getCollectionContext = async (id: number, canEmbed: boolean): Promise<Context> => {
   if (!id) return getDefaultContext()
   try {
     const collection = await getCollection(id)
@@ -57,7 +57,7 @@ const getCollectionContext = async (id: number): Promise<Context> => {
       title: `${collection.playlist_name} • ${user.name}`,
       description: collection.description || '',
       image: getImageUrl(coverArt, gateway),
-      embed: true,
+      embed: canEmbed,
       embedUrl: getEmbedUrl(
         collection.is_album ? Playable.ALBUM : Playable.PLAYLIST,
         collection.playlist_id,
@@ -118,7 +118,9 @@ const getResponse = async (
     handle,
   } = req.params
   const userAgent = req.get('User-Agent')
-  console.log(userAgent)
+  const canEmbed = userAgent
+    ? userAgent.toLowerCase().includes('twitter')
+    : false
 
   let context: Context
 
@@ -126,23 +128,23 @@ const getResponse = async (
   switch (format) {
     case MetaTagFormat.Track:
       console.log('get track', req.path, id, userAgent)
-      context = await getTrackContext(id)
+      context = await getTrackContext(id, canEmbed)
       break
     case MetaTagFormat.Collection:
-      console.log('get collection', req.path, id)
-      context = await getCollectionContext(id)
+      console.log('get collection', req.path, id, userAgent)
+      context = await getCollectionContext(id, canEmbed)
       break
     case MetaTagFormat.User:
-      console.log('get user', req.path, handle)
+      console.log('get user', req.path, handle, userAgent)
       context = await getUserContext(handle)
       break
     case MetaTagFormat.Upload:
-      console.log('get upload', req.path)
+      console.log('get upload', req.path, userAgent)
       context = await getUploadContext()
       break
     case MetaTagFormat.Error:
     default:
-      console.log('get default', req.path)
+      console.log('get default', req.path, userAgent)
       context = getDefaultContext()
   }
 
