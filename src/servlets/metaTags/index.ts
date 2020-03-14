@@ -117,13 +117,15 @@ const getResponse = async (
     title,
     handle,
   } = req.params
+  const userAgent = req.get('User-Agent')
+  console.log(userAgent)
 
   let context: Context
 
   const id = title ? parseInt(title.split('-').slice(-1)[0], 10) : -1
   switch (format) {
     case MetaTagFormat.Track:
-      console.log('get track', req.path, id)
+      console.log('get track', req.path, id, userAgent)
       context = await getTrackContext(id)
       break
     case MetaTagFormat.Collection:
