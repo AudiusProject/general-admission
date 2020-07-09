@@ -7,7 +7,7 @@ import { DEFAULT_IMAGE_URL } from '../utils/constants'
 import { formatGateway, getCollection, getImageUrl, getTrack, getUser, getUserByHandle } from '../utils/helpers'
 import { Context, MetaTagFormat, Playable } from './types'
 
-const CAN_EMBED_USER_AGENT_REGEX = /(twitter|discord)/g
+const CAN_EMBED_USER_AGENT_REGEX = /(twitter|discord)/
 
 const E = process.env
 
