@@ -5,23 +5,23 @@ import { onStartup } from '../../onStartup'
 import { shuffle } from '../utils/helpers'
 
 const LOG_PREFIX = 'servelet: api | '
-const TEN_MINUTES = 10 * 60 * 1000
+const DISCOVERY_PROVIDER_REFRESH_INTERVAL = 10 * 60 * 1000 // ten minutes
 
 export const router = express.Router()
 
-let useableDiscoveryProviders: string[] = []
+let usableDiscoveryProviders: string[] = []
 
 const updateDiscoveryProviders = async () => {
   const services = await libs.discoveryProvider.serviceSelector.findAll()
   console.info(LOG_PREFIX, `Updating internal API hosts ${services}`)
-  useableDiscoveryProviders = services
+  usableDiscoveryProviders = services
 }
 
 onStartup(() => {
   updateDiscoveryProviders()
   setInterval(() => {
     updateDiscoveryProviders()
-  }, TEN_MINUTES)
+  }, DISCOVERY_PROVIDER_REFRESH_INTERVAL)
 })
 
 /**
@@ -30,7 +30,7 @@ onStartup(() => {
 router.get('/', async (
   req: express.Request,
   res: express.Response) => {
-    console.info(LOG_PREFIX, `Serving API hosts: ${useableDiscoveryProviders}`)
-    const randomizedEndpoints = shuffle(useableDiscoveryProviders)
+    console.info(LOG_PREFIX, `Serving API hosts: ${usableDiscoveryProviders}`)
+    const randomizedEndpoints = shuffle(usableDiscoveryProviders)
     return res.json({ data: randomizedEndpoints })
 })
