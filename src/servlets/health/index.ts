@@ -1,5 +1,5 @@
 import express from 'express'
-import { onStartup } from '../../onStartup'
+import libs from '../../libs'
 
 export const router = express.Router()
 
@@ -9,5 +9,8 @@ export const router = express.Router()
 router.get('/', async (
   req: express.Request,
   res: express.Response) => {
-    res.send('ok')
+    const discoveryProvider = libs.discoveryProvider.discoveryProviderEndpoint
+    res.json({
+      discoveryProvider
+    })
 })
