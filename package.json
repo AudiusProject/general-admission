@@ -12,8 +12,8 @@
     "start:prod": "env-cmd -f .env.prod npm run spinup",
     "lint": "./node_modules/.bin/tslint 'src/**/*.ts'",
     "lint-fix": "./node_modules/.bin/tslint 'src/**/*.ts' --fix",
-    "test:staging": "env-cmd -f .env.stage jest",
-    "test:production": "env-cmd -f .env.prod jest"
+    "test:stage": "env-cmd -f .env.stage jest",
+    "test:prod": "env-cmd -f .env.prod jest"
   },
   "repository": {
     "type": "git",
