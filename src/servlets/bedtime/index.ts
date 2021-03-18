@@ -66,6 +66,7 @@ const getTracksFromCollection = async (collection: any, ownerUser: any): Promise
     segments: t.track_segments,
     urlPath: getTrackPath({ ownerHandle: userMap[t.owner_id].handle, title: t.title, id: t.track_id }),
     id: t.track_id,
+    isDelete: t.is_delete,
     isVerified: userMap[t.owner_id].is_verified
   })).filter((t: any) => !t.is_delete)
 

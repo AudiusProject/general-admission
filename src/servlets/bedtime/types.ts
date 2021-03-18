@@ -9,6 +9,7 @@ export type TrackResponse = {
   handle: string
   userName: string
   isVerified: boolean
+  isDelete: boolean
   segments: Array<{ duration: number, multihash: string }>
   urlPath: string
 }
