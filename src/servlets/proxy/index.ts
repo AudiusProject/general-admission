@@ -36,12 +36,16 @@ router.get('/', async (
 
       console.log(`Proxying to ${formattedUrl}`)
       const result = await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          reject(new Error('Timeout'))
+        }, 4000)
         https.get(options, (res: IncomingMessage) => {
           let json = ''
           res.on('data', (chunk) => {
               json += chunk
           })
           res.on('end', () => {
+            clearTimeout(timer)
             if (res.statusCode === 200) {
               try {
                 const data = JSON.parse(json)
@@ -53,7 +57,7 @@ router.get('/', async (
               reject(new Error(`Request failed with ${res.statusCode}`))
             }
           })
-        })
+        }).on('error', (e) => reject(e))
       })
       console.log(`Proxy succeeded to ${formattedUrl}`)
       expressRes.json(result)
