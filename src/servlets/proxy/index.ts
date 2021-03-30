@@ -8,8 +8,8 @@ const PROXY_URL = process.env.PROXY_URL
 
 export const router = express.Router()
 
-const doProxy = async (formattedUrl: string, options: object, retries = 5) => {
-  if (retries === 0) throw new Error ('Too many retries')
+const doProxy = async (formattedUrl: string, options: object, retries = 5): Promise<any> => {
+  if (retries === 0) throw new Error('Too many retries')
   try {
     console.log(`Proxying to ${formattedUrl}`)
     const result = await new Promise((resolve, reject) => {
@@ -36,9 +36,10 @@ const doProxy = async (formattedUrl: string, options: object, retries = 5) => {
         })
       }).on('error', (e) => reject(e))
     })
+    return result
   } catch (e) {
     console.error(e)
-    doProxy(formattedUrl, options, retries - 1)
+    return doProxy(formattedUrl, options, retries - 1)
   }
 }
 
