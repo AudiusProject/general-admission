@@ -4,9 +4,52 @@ import https from 'https'
 import HttpsProxyAgent from 'https-proxy-agent'
 import urlLib from 'url'
 
-const PROXY_URL = process.env.PROXY_URL
+import promiseAny from '../utils/promise.any'
+
+const PROXY_URLS = (process.env.PROXY_URLS || '').split(',')
 
 export const router = express.Router()
+
+const proxyRequest = async (proxyUrl: string, formattedUrl: string) => {
+  // @ts-ignore
+  const proxyOpts = urlLib.parse(proxyUrl)
+  // @ts-ignore
+  proxyOpts.rejectUnauthorized = false
+  // @ts-ignore
+  const agent = new HttpsProxyAgent(proxyOpts)
+
+  const options = urlLib.parse(formattedUrl)
+  // @ts-ignore
+  options.agent = agent
+  // @ts-ignore
+  options.rejectUnauthorized = false
+
+  console.log(`Proxying to ${formattedUrl} via ${proxyUrl}`)
+  const start = Date.now()
+  const result = await new Promise((resolve, reject) => {
+    https.get(options, (res: IncomingMessage) => {
+      let json = ''
+      res.on('data', (chunk) => {
+          json += chunk
+      })
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const data = JSON.parse(json)
+            resolve(data)
+          } catch (e) {
+            reject(new Error('Error parsing JSON!'))
+          }
+        } else {
+          reject(new Error(`Request failed with ${res.statusCode}`))
+        }
+      })
+    })
+  })
+  const duration = Date.now() - start
+  console.log(`[${duration}] Proxy succeeded to ${formattedUrl} via ${proxyUrl}`)
+  return result
+}
 
 /**
  * Returns status 200 to check for liveness
@@ -23,46 +66,15 @@ router.get('/', async (
       if (!url) throw new Error('No url provided')
       if (!replace) throw new Error('No replace json provided')
 
-      // @ts-ignore
-      const proxyOpts = urlLib.parse(PROXY_URL)
-      // @ts-ignore
-      proxyOpts.rejectUnauthorized = false
-      // @ts-ignore
-      const agent = new HttpsProxyAgent(proxyOpts)
-
       let formattedUrl = url
       const parsedReplaceJSON = JSON.parse(replace)
       Object.keys(parsedReplaceJSON).forEach((key: string) => {
         formattedUrl = formattedUrl.replace(key, parsedReplaceJSON[key])
       })
-      const options = urlLib.parse(formattedUrl)
-      // @ts-ignore
-      options.agent = agent
-      // @ts-ignore
-      options.rejectUnauthorized = false
 
-      console.log(`Proxying to ${formattedUrl}`)
-      const result = await new Promise((resolve, reject) => {
-        https.get(options, (res: IncomingMessage) => {
-          let json = ''
-          res.on('data', (chunk) => {
-              json += chunk
-          })
-          res.on('end', () => {
-            if (res.statusCode === 200) {
-              try {
-                const data = JSON.parse(json)
-                resolve(data)
-              } catch (e) {
-                reject(new Error('Error parsing JSON!'))
-              }
-            } else {
-              reject(new Error(`Request failed with ${res.statusCode}`))
-            }
-          })
-        })
-      })
-      console.log(`Proxy succeeded to ${formattedUrl}`)
+      const requests = PROXY_URLS.map((proxy) => proxyRequest(proxy, formattedUrl))
+      const result = await promiseAny(requests)
+
       expressRes.json(result)
     } catch (e) {
       console.error(e)
