@@ -52,11 +52,12 @@ const proxyRequest = async (proxyUrl: string, formattedUrl: string) => {
 }
 
 /**
- * Returns status 200 to check for liveness
+ * Proxy request via external
  */
 router.get('/', async (
   req: express.Request,
-  expressRes: express.Response) => {
+  expressRes: express.Response
+) => {
     try {
       const {
         url,
@@ -80,4 +81,28 @@ router.get('/', async (
       console.error(e)
       expressRes.status(500).send({ error: e.message })
     }
+})
+
+/**
+ * Simple proxy with no external
+ */
+router.get('/simple', async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const { url } = req.query
+  const newReq = https.request(decodeURI(url), (newRes: any) => {
+    const headers = {
+      'Access-Control-Allow-Method': '*',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*'
+    }
+
+    res.writeHead(newRes.statusCode, headers)
+    newRes.pipe(res)
+  }).on('error', (err) => {
+    res.statusCode = 500
+    res.end()
+  })
+  req.pipe(newReq)
 })
