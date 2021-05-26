@@ -35,7 +35,7 @@ const template = handlebars.compile(
 
 const getTrackContext = async (id: number, canEmbed: boolean): Promise<Context> => {
   if (!id) return getDefaultContext()
-  if(shouldRedirectTrack(id)) return getDefaultContext()
+  if (shouldRedirectTrack(id)) return getDefaultContext()
   try {
     const track = await getTrack(id)
     const user = await getUser(track.owner_id)
