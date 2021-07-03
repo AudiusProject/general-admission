@@ -7,7 +7,7 @@ import {
 } from './constants'
 
 export const getTrack = async (id: number): Promise<any> => {
-  const t = await libs.Track.getTracks(1, 0, [id])
+  const t = await libs.Track.getTracks(1, 0, [id], null, null, null, null, /* withUsers */ true)
   if (t && t[0]) return t[0]
   throw new Error(`Failed to get track ${id}`)
 }
@@ -19,7 +19,7 @@ export const getTracks = async (ids: number[]): Promise<any> => {
 }
 
 export const getCollection = async (id: number): Promise<any> => {
-  const c = await libs.Playlist.getPlaylists(1, 0, [id])
+  const c = await libs.Playlist.getPlaylists(1, 0, [id], null, /* withUsers */ true)
   if (c && c[0]) return c[0]
   throw new Error(`Failed to get collection ${id}`)
 }
