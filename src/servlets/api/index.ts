@@ -14,7 +14,12 @@ let usableDiscoveryProviders: string[] = []
 const updateDiscoveryProviders = async () => {
   const services = await libs.discoveryProvider.serviceSelector.findAll()
   console.info(LOG_PREFIX, `Updating internal API hosts ${services}`)
-  usableDiscoveryProviders = services
+  if (services.length > 1) {
+    usableDiscoveryProviders = services
+  } else {
+    const allServices = await libs.discoveryProvider.serviceSelector.getServices()
+    usableDiscoveryProviders = allServices
+  }
 }
 
 onStartup(() => {
