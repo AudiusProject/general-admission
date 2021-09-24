@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "copyfiles": "copyfiles -u 1 src/public/* src/**/*.html src/**/*.js build/src",
     "spinup": "nodemon src/index.ts",
     "start": "env-cmd -f .env npm run spinup",
     "start:stage": "env-cmd -f .env.stage npm run spinup",
