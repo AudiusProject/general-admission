@@ -104,7 +104,8 @@ router.get([
   '/:handle/tracks',
   '/:handle/playlists',
   '/:handle/albums',
-  '/:handle/reposts'
+  '/:handle/reposts',
+  '/:handle/collectibles'
 ], (
   req: express.Request,
   res: express.Response) => {
@@ -122,7 +123,7 @@ router.get([
 )
 
 router.get([
-  '/:handle/collectibles'
+  // '/:handle/collectibles'
 ], (
   req: express.Request,
   res: express.Response) => {
