@@ -123,7 +123,7 @@ router.get([
 )
 
 router.get([
-  // '/:handle/collectibles'
+  '/:handle/NOT_ACTIVATED'
 ], (
   req: express.Request,
   res: express.Response) => {
