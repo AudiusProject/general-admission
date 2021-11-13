@@ -1,5 +1,7 @@
-const createClient = require('ipfs-http-client')
-const { globSource } = createClient
+import createClient from 'ipfs-http-client'
+
+const { globSource: _globSource } = createClient
+export const globSource = _globSource
 
 const IPFS_PROTOCOL = process.env.IPFS_PROTOCOL || 'http'
 const IPFS_HOST = process.env.IPFS_HOST || 'localhost'
@@ -13,5 +15,4 @@ const ipfs = createClient({
   port: IPFS_PORT
 })
 
-module.exports = ipfs
-module.exports.globSource = globSource
+export default ipfs
