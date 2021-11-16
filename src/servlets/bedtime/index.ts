@@ -1,6 +1,5 @@
 import { Collectible } from '@audius/fetch-nft'
 import express from 'express'
-import fetch from 'node-fetch'
 
 import libs from '../../libs'
 import { nftClient } from '../utils/fetchNft'
