@@ -142,7 +142,11 @@ const getUserContext = async (handle: string): Promise<Context> => {
   }
 }
 
-const getCollectiblesContext = async (handle: string, canEmbed: boolean, isDiscord: boolean = false): Promise<Context> => {
+const getCollectiblesContext = async (
+  handle: string,
+  canEmbed: boolean,
+  isDiscord: boolean = false
+): Promise<Context> => {
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
@@ -171,7 +175,12 @@ const getCollectiblesContext = async (handle: string, canEmbed: boolean, isDisco
   }
 }
 
-const getCollectibleContext = async (handle: string, collectibleId: string, canEmbed: boolean, isDiscord: boolean = false): Promise<Context> => {
+const getCollectibleContext = async (
+  handle: string,
+  collectibleId: string,
+  canEmbed: boolean,
+  isDiscord: boolean = false
+): Promise<Context> => {
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
