@@ -68,7 +68,7 @@ router.get('/simple', async (
   expressRes: express.Response
 ) => {
   const url = req.query.url as string
-  const res = await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve, reject) => {
     request({
       url,
       headers: {
@@ -81,5 +81,5 @@ router.get('/simple', async (
       (error) => reject(error)
     )
   })
-  expressRes.send(res)
+  expressRes.send(result)
 })
