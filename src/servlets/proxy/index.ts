@@ -10,6 +10,20 @@ export const router = express.Router()
 const proxyRequest = async (proxyUrl: string, formattedUrl: string) => {
   console.log(`Proxying to ${formattedUrl} via ${proxyUrl}`)
   const start = Date.now()
+
+  /**
+   * Note:
+   * As of writing implementation request-promise (and request) are deprecated
+   * modules.
+   * Axios is a better (more cannonical solution to Audius), but given
+   * experimentation & outlined issues
+   * https://github.com/axios/axios/issues/925
+   * Proxying to https via an http proxy is not working well with axios.
+   * Several workarounds do not appear to be working on the latest versions
+   * of axios & https proxy agent.
+   * request-promise works well, but its usage should be limited to the scope
+   * of this method.
+   */
   const result = await new Promise((resolve, reject) => {
     request({
       url: formattedUrl,
