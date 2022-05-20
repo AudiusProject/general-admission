@@ -96,7 +96,17 @@ router.get(
         files.push(file)
       }
       const rootFile = files.find((f) => f.path === buildFileName)
-      res.json({ cid: rootFile.cid.toString() })
+      const rootCID = rootFile.cid.toString()
+      try {
+        // Announce to the network that you are providing given values.
+        for await (const message of ipfs.dht.provide(rootCID, { recursive: true })) {
+          console.log(message)
+        }
+      } catch (e) {
+        // NOTE: It's expected that this fails because not all nodes will respond
+        // as long as some nodes respond, it appears to be fine
+      }
+      res.json({ cid: rootCID })
     } catch (err) {
       console.log(err)
       res.status(500).send(err.message)
