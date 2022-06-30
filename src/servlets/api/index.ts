@@ -41,7 +41,6 @@ onStartup(() => {
  * Gets a randomized list of discovery service endpoints
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
-  updateDiscoveryProviders()
   console.info(LOG_PREFIX, `Serving API hosts: ${usableDiscoveryProviders}`)
   const randomizedEndpoints = shuffle(usableDiscoveryProviders)
   return res.json({ data: randomizedEndpoints })
