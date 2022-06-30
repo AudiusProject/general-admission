@@ -26,7 +26,7 @@ router.get(
         )
       res.json(contentNodes)
     } catch (err) {
-      res.status(500).send(err.message)
+      res.status(500).send((err as Error).message)
     }
   }
 )
@@ -37,7 +37,7 @@ router.get('/ipfs', async (req: express.Request, res: express.Response) => {
     const ipfsId = await ipfs.id()
     res.json(ipfsId)
   } catch (err) {
-    res.status(500).send(err.message)
+    res.status(500).send((err as Error).message)
   }
 })
 
@@ -75,7 +75,7 @@ router.get(
 
       res.json({ success: true })
     } catch (err) {
-      res.status(500).send(err.message)
+      res.status(500).send((err as Error).message)
     }
   }
 )
@@ -99,7 +99,7 @@ router.get(
       res.json({ cid: rootFile.cid.toString() })
     } catch (err) {
       console.log(err)
-      res.status(500).send(err.message)
+      res.status(500).send((err as Error).message)
     }
   }
 )

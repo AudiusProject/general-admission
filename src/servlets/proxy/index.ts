@@ -71,7 +71,7 @@ router.get('/', async (req: express.Request, expressRes: express.Response) => {
     expressRes.json(result)
   } catch (e) {
     console.error(e)
-    expressRes.status(500).send({ error: e.message })
+    expressRes.status(500).send({ error: (e as Error).message })
   }
 })
 
