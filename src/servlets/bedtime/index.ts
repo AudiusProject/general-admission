@@ -54,7 +54,7 @@ const getTrackMetadata = async (
       id: track.track_id,
     }
   } catch (e) {
-    const error = `Failed to get track for ID [${trackId}] with error: [${e.message}]`
+    const error = `Failed to get track for ID [${trackId}] with error: [${(e as Error).message}]`
     console.error(error)
     return Promise.reject(error)
   }
@@ -153,7 +153,7 @@ const getCollectionMetadata = async (
       gateways: ownerUser.creator_node_endpoint,
     }
   } catch (e) {
-    const error = `Failed to get collection for ID [${collectionId}] with error: [${e.message}]`
+    const error = `Failed to get collection for ID [${collectionId}] with error: [${(e as Error).message}]`
     console.error(error)
     return Promise.reject(error)
   }
@@ -162,16 +162,16 @@ const getCollectionMetadata = async (
 type CollectiblesMetadata = {
   user: any
 } & (
-  | {
+    | {
       ethCollectibles: CollectibleState
       solCollectibles: CollectibleState
       type: 'gallery'
     }
-  | {
+    | {
       collectible: Collectible | null
       type: 'detail'
     }
-)
+  )
 
 const getCollectiblesMetadata = async (
   handle: string,
@@ -280,7 +280,7 @@ export const getBedtimeResponse = async (
     return res.send(resp)
   } catch (e) {
     console.error(e)
-    if (e.message === DELETED_MESSAGE) {
+    if ((e as Error).message === DELETED_MESSAGE) {
       res.status(404).send(e)
     } else {
       res.status(500).send(e)
