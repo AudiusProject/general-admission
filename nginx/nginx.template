@@ -91,13 +91,8 @@ http {
     }
 
     # Proxy social
-    location /social {
-      proxy_pass http://node:8000;
-    }
-
-    # Proxy test
-    location /asdf {
-      proxy_pass http://node:8000;
+    location /social/ {
+      proxy_pass http://social:8001/;
     }
 
     # Proxy proxy
