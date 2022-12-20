@@ -91,12 +91,12 @@ http {
     }
 
     # Proxy social
-    location /social/ {
+    location /social {
       proxy_pass http://node:8000;
     }
 
     # Proxy test
-    location /asdf/ {
+    location /asdf {
       proxy_pass http://node:8000;
     }
 
