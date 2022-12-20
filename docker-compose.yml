@@ -5,7 +5,7 @@ services:
     container_name: nginx
     image: nginx:alpine
     ports:
-      - "9000:80"
+      - "80:80"
     volumes:
       - ./nginx:/home/nginx
     env_file:

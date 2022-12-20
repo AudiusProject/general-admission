@@ -95,6 +95,11 @@ http {
       proxy_pass http://node:8000;
     }
 
+    # Proxy social
+    location /social {
+      proxy_pass http://social:8001;
+    }
+
     # metadata/dapp passthrough
     location / {
       proxy_set_header  Host              $host;
