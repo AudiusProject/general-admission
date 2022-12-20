@@ -96,7 +96,7 @@ http {
     }
 
     # Proxy social
-    location /social {
+    location /social/ {
       proxy_pass http://social:8001;
     }
 
