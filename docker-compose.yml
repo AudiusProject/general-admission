@@ -47,5 +47,5 @@ services:
         max-size: 500m
 
 networks:
-  proxynet:
+  default:
     name: general_admission
