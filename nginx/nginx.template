@@ -90,6 +90,11 @@ http {
       proxy_pass ${BEDTIME_URL};
     }
 
+    # Proxy social
+    location /social/ {
+      proxy_pass http://social:8001/;
+    }
+
     # Proxy proxy
     location /proxy {
       proxy_pass http://node:8000;
