@@ -55,7 +55,7 @@
     "@types/unzipper": "^0.10.3",
     "copyfiles": "^2.4.1",
     "env-cmd": "^9.0.3",
-    "jest": "^24.8.0",
+    "jest": "^29.3.1",
     "nodemon": "^2.0.13",
     "request": "^2.88.0",
     "rimraf": "^3.0.2",
