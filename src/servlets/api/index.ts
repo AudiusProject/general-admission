@@ -18,18 +18,15 @@ const updateDiscoveryProviders = async () => {
   services = services
     .filter((service: { version: string }) => service.version >= registeredVersion)
     .map((service: { endpoint: string }) => service.endpoint)
-  console.warn({services})
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
   if (services.length > MIN_HEALTHY_SERVICES) {
     usableDiscoveryProviders = services
-    console.warn('usable1', {usableDiscoveryProviders})
   } else {
     // Get all services (no healthy check)
     const allServices =
       await libs.discoveryProvider.serviceSelector.getServices()
     usableDiscoveryProviders = allServices
-    console.warn('usable2', {usableDiscoveryProviders})
   }
 }
 
