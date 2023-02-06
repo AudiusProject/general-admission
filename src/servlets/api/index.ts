@@ -16,7 +16,7 @@ const updateDiscoveryProviders = async () => {
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
   let services = await libs.discoveryProvider.serviceSelector.findAll({ verbose: true })
   services = services
-    .filter((service: { version: string }) => service.version === registeredVersion)
+    .filter((service: { version: string }) => service.version >= registeredVersion)
     .map((service: { endpoint: string }) => service.endpoint)
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
