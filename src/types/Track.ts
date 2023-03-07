@@ -23,6 +23,7 @@ export type Track = {
   favorite_count: number
   genre: string
   id: string
+  is_premium: boolean
   mood: string
   permalink: string
   play_count: number
