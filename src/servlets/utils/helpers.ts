@@ -90,7 +90,11 @@ export const getTrackByHandleAndSlug = async (
   handle: string,
   slug: string
 ): Promise<Track> => {
-  const url = `${libs.discoveryProvider.discoveryProviderEndpoint}/v1/full/tracks?handle=${encodeURIComponent(handle)}&slug=${encodeURIComponent(slug)}`
+  const url = `${
+    libs.discoveryProvider.discoveryProviderEndpoint
+  }/v1/full/tracks?handle=${encodeURIComponent(
+    handle
+  )}&slug=${encodeURIComponent(slug)}`
   const res = await fetch(url)
   const { data: track } = await res.json()
   if (track) return Array.isArray(track) ? track[0] : track
