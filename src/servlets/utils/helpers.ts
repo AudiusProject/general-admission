@@ -93,7 +93,6 @@ export const getTrackByHandleAndSlug = async (
   const url = `${libs.discoveryProvider.discoveryProviderEndpoint}/v1/full/tracks?handle=${encodeURIComponent(handle)}&slug=${encodeURIComponent(slug)}`
   const res = await fetch(url)
   const { data: track } = await res.json()
-  console.log({url, track})
   if (track) return Array.isArray(track) ? track[0] : track
 
   // Ensure at least 5 digits (anything lower has old route in the DB)
