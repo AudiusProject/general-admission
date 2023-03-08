@@ -134,6 +134,7 @@ export type TrackModel = {
   genre: string
   is_current: boolean
   is_delete: boolean
+  is_premium: boolean
   is_unlisted: boolean
   isrc: string
   iswc: string
