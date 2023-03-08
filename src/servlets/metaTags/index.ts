@@ -77,6 +77,7 @@ const getTrackContext = async (
   if (!handle || !slug) return getDefaultContext()
   try {
     const track = await getTrackByHandleAndSlug(handle, slug)
+    const isPremium = track.is_premium
 
     const tags = track.tags ? track.tags.split(',') : []
     tags.push('audius', 'sound', 'kit', 'sample', 'pack', 'stems', 'mix')
@@ -98,7 +99,7 @@ const getTrackContext = async (
       tags,
       labels,
       image: track.artwork['1000x1000'],
-      embed: canEmbed,
+      embed: canEmbed && !isPremium,
       embedUrl: getTrackEmbedUrl(Playable.TRACK, track.id),
     }
   } catch (e) {

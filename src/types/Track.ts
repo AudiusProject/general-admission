@@ -23,6 +23,7 @@ export type Track = {
   favorite_count: number
   genre: string
   id: string
+  is_premium: boolean
   mood: string
   permalink: string
   play_count: number
@@ -133,6 +134,7 @@ export type TrackModel = {
   genre: string
   is_current: boolean
   is_delete: boolean
+  is_premium: boolean
   is_unlisted: boolean
   isrc: string
   iswc: string
