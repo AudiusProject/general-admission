@@ -99,7 +99,7 @@ const getTrackContext = async (
       tags,
       labels,
       image: track.artwork['1000x1000'],
-      embed: canEmbed && isPremium,
+      embed: canEmbed && !isPremium,
       embedUrl: getTrackEmbedUrl(Playable.TRACK, track.id),
     }
   } catch (e) {
