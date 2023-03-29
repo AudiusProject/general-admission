@@ -28,7 +28,7 @@ const updateDiscoveryProviders = async () => {
     console.log(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   } else {
     // Get all services (no healthy check)
-    let services =
+    services =
       await libs.discoveryProvider.serviceSelector.getServices()
     services = services
       .filter((endpoint: string) => !discoveryNodeBlocklist.has(endpoint))
