@@ -16,9 +16,7 @@ let usableDiscoveryProviders: string[] = []
 
 const updateDiscoveryProviders = async () => {
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
-  console.log('registered', registeredVersion)
   let services = await libs.discoveryProvider.serviceSelector.findAll({ verbose: true })
-  console.log('find all finished')
   services = services
     .filter((service: { version: string }) => service.version >= registeredVersion)
     .map((service: { endpoint: string }) => service.endpoint)
