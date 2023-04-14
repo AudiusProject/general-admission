@@ -7,7 +7,9 @@ import { shuffle } from '../utils/helpers'
 const LOG_PREFIX = 'servelet: api | '
 const DISCOVERY_PROVIDER_REFRESH_INTERVAL = 60 * 1000 // one minute
 const MIN_HEALTHY_SERVICES = 10
+const DISCOVERY_NODE_BLOCKLIST = process.env.DISCOVERY_NODE_BLOCKLIST
 
+const discoveryNodeBlocklist = new Set(DISCOVERY_NODE_BLOCKLIST ?  DISCOVERY_NODE_BLOCKLIST.split(',') : [])
 export const router = express.Router()
 
 let usableDiscoveryProviders: string[] = []
@@ -18,15 +20,19 @@ const updateDiscoveryProviders = async () => {
   services = services
     .filter((service: { version: string }) => service.version >= registeredVersion)
     .map((service: { endpoint: string }) => service.endpoint)
-  console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
+    .filter((endpoint: string) => !discoveryNodeBlocklist.has(endpoint))
+  console.log(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
   if (services.length > MIN_HEALTHY_SERVICES) {
     usableDiscoveryProviders = services
+    console.log(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   } else {
     // Get all services (no healthy check)
-    const allServices =
+    services =
       await libs.discoveryProvider.serviceSelector.getServices()
-    usableDiscoveryProviders = allServices
+    services = services
+      .filter((endpoint: string) => !discoveryNodeBlocklist.has(endpoint))
+    usableDiscoveryProviders = services
   }
 }
 
