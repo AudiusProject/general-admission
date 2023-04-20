@@ -21,7 +21,7 @@ const updateDiscoveryProviders = async () => {
   console.info(LOG_PREFIX, `Found services ${JSON.stringify(services)}`)
   services = services
     .filter((service: { version: string }) => semver.gte(service.version, registeredVersion))
-    .filter((service: { block_difference: number }) => service.block_difference >= MIN_BLOCK_DIFFERENCE)
+    .filter((service: { block_difference: number }) => service.block_difference <= MIN_BLOCK_DIFFERENCE)
     .map((service: { endpoint: string }) => service.endpoint)
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
