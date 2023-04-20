@@ -6,7 +6,7 @@ import { shuffle } from '../utils/helpers'
 
 const LOG_PREFIX = 'servelet: api | '
 const DISCOVERY_PROVIDER_REFRESH_INTERVAL = 60 * 1000 // one minute
-const MIN_HEALTHY_SERVICES = 10
+const MIN_HEALTHY_SERVICES = 8
 const MIN_BLOCK_DIFFERENCE = 50
 
 export const router = express.Router()
