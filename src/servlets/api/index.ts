@@ -7,6 +7,7 @@ import { shuffle } from '../utils/helpers'
 const LOG_PREFIX = 'servelet: api | '
 const DISCOVERY_PROVIDER_REFRESH_INTERVAL = 60 * 1000 // one minute
 const MIN_HEALTHY_SERVICES = 10
+const MIN_BLOCK_DIFFERENCE = 50
 
 export const router = express.Router()
 
@@ -17,6 +18,7 @@ const updateDiscoveryProviders = async () => {
   let services = await libs.discoveryProvider.serviceSelector.findAll({ verbose: true })
   services = services
     .filter((service: { version: string }) => service.version >= registeredVersion)
+    .filter((service: { block_difference: number }) => service.block_difference >= MIN_BLOCK_DIFFERENCE)
     .map((service: { endpoint: string }) => service.endpoint)
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead

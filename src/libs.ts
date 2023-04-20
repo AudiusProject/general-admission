@@ -1,4 +1,4 @@
-import { libs as AudiusLibs } from '@audius/sdk'
+const { libs: AudiusLibs } = require('@audius/sdk')
 
 const E = process.env
 
