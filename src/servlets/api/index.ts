@@ -23,8 +23,10 @@ const updateDiscoveryProviders = async () => {
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
   if (services.length > MIN_HEALTHY_SERVICES) {
+    console.info(LOG_PREFIX, `Enough services found ${services.length} > ${MIN_HEALTHY_SERVICES}`)
     usableDiscoveryProviders = services
   } else {
+    console.info(LOG_PREFIX, `Not enough healthy services found, returning everything`)
     // Get all services (no healthy check)
     const allServices =
       await libs.discoveryProvider.serviceSelector.getServices()
