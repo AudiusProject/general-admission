@@ -1,7 +1,7 @@
 import express from 'express'
+import semver from 'semver'
 import libs from '../../libs'
 import { onStartup } from '../../onStartup'
-import semver from 'semver'
 
 import { shuffle } from '../utils/helpers'
 
@@ -16,7 +16,7 @@ let usableDiscoveryProviders: string[] = []
 
 const updateDiscoveryProviders = async () => {
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
-  console.info(LOG_PREFIX, `Registered version ${registeredVersion}`) 
+  console.info(LOG_PREFIX, `Registered version ${registeredVersion}`)
   let services = await libs.discoveryProvider.serviceSelector.findAll({ verbose: true })
   console.info(LOG_PREFIX, `Found services ${JSON.stringify(services)}`)
   services = services
