@@ -52,6 +52,7 @@
     "@types/node-fetch": "^2.5.8",
     "@types/request": "^2.48.2",
     "@types/request-promise": "^4.1.48",
+    "@types/semver": "^7.3.13",
     "@types/unzipper": "^0.10.3",
     "copyfiles": "^2.4.1",
     "env-cmd": "^9.0.3",

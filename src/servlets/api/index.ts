@@ -1,6 +1,7 @@
 import express from 'express'
 import libs from '../../libs'
 import { onStartup } from '../../onStartup'
+import semver from 'semver'
 
 import { shuffle } from '../utils/helpers'
 
@@ -19,7 +20,7 @@ const updateDiscoveryProviders = async () => {
   let services = await libs.discoveryProvider.serviceSelector.findAll({ verbose: true })
   console.info(LOG_PREFIX, `Found services ${JSON.stringify(services)}`)
   services = services
-    .filter((service: { version: string }) => service.version >= registeredVersion)
+    .filter((service: { version: string }) => semver.gte(service.version, registeredVersion))
     .filter((service: { block_difference: number }) => service.block_difference >= MIN_BLOCK_DIFFERENCE)
     .map((service: { endpoint: string }) => service.endpoint)
   console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
