@@ -39,7 +39,7 @@
     "handlebars": "^4.1.2",
     "hashids": "^2.2.8",
     "ipfs-http-client": "43.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "node-fetch": "^2.6.1",
     "request-promise": "^4.2.6",
     "unzipper": "^0.10.11"
