@@ -47,16 +47,8 @@ const updateDiscoveryProviders = async () => {
   } else {
     console.info(LOG_PREFIX, `Not enough healthy services found, returning everything`)
     // Get all services (no healthy check)
-    const allServices =
-      await libs.discoveryProvider.serviceSelector.getServices()
-    usableDiscoveryProviders = allServices.map((s: Node) => ({
-      owner: s.owner,
-      endpoint: s.endpoint,
-      spID: s.spID,
-      type: s.type,
-      blockNumber: s.blockNumber,
-      delegateOwnerWallet: s.delegateOwnerWallet
-    }))
+    const allServices = await libs.ServiceProvider.listDiscoveryProviders()
+    usableDiscoveryProviders = allServices
   }
 }
 
