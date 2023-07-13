@@ -13,6 +13,7 @@ const MIN_BLOCK_DIFFERENCE = 50
 export const router = express.Router()
 
 let usableDiscoveryProviders: string[] = []
+let usableContentNodes: string[] = []
 
 const updateDiscoveryProviders = async () => {
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
@@ -23,7 +24,7 @@ const updateDiscoveryProviders = async () => {
     .filter((service: { version: string }) => semver.gte(service.version, registeredVersion))
     .filter((service: { block_difference: number }) => service.block_difference <= MIN_BLOCK_DIFFERENCE)
     .map((service: { endpoint: string }) => service.endpoint)
-  console.info(LOG_PREFIX, `Updating internal API hosts ${JSON.stringify(services)}`)
+  console.info(LOG_PREFIX, `Updating internal discovery node hosts ${JSON.stringify(services)}`)
   // If we only have found MIN_HEALTHY_SERVICES, just show everything instead
   if (services.length > MIN_HEALTHY_SERVICES) {
     console.info(LOG_PREFIX, `Enough services found ${services.length} > ${MIN_HEALTHY_SERVICES}`)
@@ -37,10 +38,19 @@ const updateDiscoveryProviders = async () => {
   }
 }
 
+const updateContentNodes = async () => {
+  const registeredVersion = await libs.ethContracts.getCurrentVersion('content-node')
+  console.info(LOG_PREFIX, `Registered version ${registeredVersion}`)
+  const services = await libs.ServiceProvider.listCreatorNodes()
+  usableContentNodes = services.map((s: { endpoint: string }) => s.endpoint)
+}
+
 onStartup(() => {
   updateDiscoveryProviders()
+  updateContentNodes()
   setInterval(() => {
     updateDiscoveryProviders()
+    updateContentNodes()
   }, DISCOVERY_PROVIDER_REFRESH_INTERVAL)
 })
 
@@ -50,5 +60,23 @@ onStartup(() => {
 router.get('/', async (req: express.Request, res: express.Response) => {
   console.info(LOG_PREFIX, `Serving API hosts: ${usableDiscoveryProviders}`)
   const randomizedEndpoints = shuffle(usableDiscoveryProviders)
+  return res.json({ data: randomizedEndpoints })
+})
+
+/**
+ * Gets a randomized list of discovery service endpoints
+ */
+router.get('/discovery', async (req: express.Request, res: express.Response) => {
+  console.info(LOG_PREFIX, `Serving API hosts: ${usableDiscoveryProviders}`)
+  const randomizedEndpoints = shuffle(usableDiscoveryProviders)
+  return res.json({ data: randomizedEndpoints })
+})
+
+/**
+ * Gets a randomized list of discovery service endpoints
+ */
+router.get('/content', async (req: express.Request, res: express.Response) => {
+  console.info(LOG_PREFIX, `Serving API hosts: ${usableContentNodes}`)
+  const randomizedEndpoints = shuffle(usableContentNodes)
   return res.json({ data: randomizedEndpoints })
 })
