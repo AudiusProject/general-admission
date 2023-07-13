@@ -77,7 +77,7 @@ onStartup(() => {
 })
 
 /**
- * Gets a randomized list of discovery service endpoints
+ * Gets a randomized list of discovery node endpoints
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   const randomizedEndpoints = shuffle(usableDiscoveryProviders.map(s => s.endpoint))
@@ -85,7 +85,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 })
 
 /**
- * Gets a randomized list of discovery service endpoints
+ * Gets a randomized list of discovery node endpoints
  */
 router.get('/discovery', async (req: express.Request, res: express.Response) => {
   const randomizedEndpoints = shuffle(usableDiscoveryProviders.map(s => s.endpoint))
@@ -93,7 +93,7 @@ router.get('/discovery', async (req: express.Request, res: express.Response) => 
 })
 
 /**
- * Gets a randomized list of discovery service endpoints
+ * Gets a randomized list of discovery node endpoints with verbose data
  */
 router.get('/discovery/verbose', async (req: express.Request, res: express.Response) => {
   const randomizedEndpoints = shuffle(usableDiscoveryProviders)
@@ -102,7 +102,7 @@ router.get('/discovery/verbose', async (req: express.Request, res: express.Respo
 
 
 /**
- * Gets a randomized list of discovery service endpoints
+ * Gets a randomized list of content node endpoints
  */
 router.get('/content', async (req: express.Request, res: express.Response) => {
   const randomizedEndpoints = shuffle(usableContentNodes.map(s => s.endpoint))
@@ -111,7 +111,7 @@ router.get('/content', async (req: express.Request, res: express.Response) => {
 
 
 /**
- * Gets a randomized list of discovery service endpoints
+ * Gets a randomized list of content node endpoints with verbose data
  */
 router.get('/content/verbose', async (req: express.Request, res: express.Response) => {
   const randomizedEndpoints = shuffle(usableContentNodes)
