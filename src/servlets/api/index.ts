@@ -14,7 +14,7 @@ type Node = {
   owner: string
   endpoint: string
   spID: number
-  type: "content-node" | "discovery-node",
+  type: 'content-node' | 'discovery-node',
   blockNumber: number,
   delegateOwnerWallet: string
 }
@@ -80,7 +80,7 @@ onStartup(() => {
  * Gets a randomized list of discovery node endpoints
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
-  const randomizedEndpoints = shuffle(usableDiscoveryProviders.map(s => s.endpoint))
+  const randomizedEndpoints = shuffle(usableDiscoveryProviders.map((s) => s.endpoint))
   return res.json({ data: randomizedEndpoints })
 })
 
@@ -88,7 +88,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  * Gets a randomized list of discovery node endpoints
  */
 router.get('/discovery', async (req: express.Request, res: express.Response) => {
-  const randomizedEndpoints = shuffle(usableDiscoveryProviders.map(s => s.endpoint))
+  const randomizedEndpoints = shuffle(usableDiscoveryProviders.map((s) => s.endpoint))
   return res.json({ data: randomizedEndpoints })
 })
 
@@ -100,15 +100,13 @@ router.get('/discovery/verbose', async (req: express.Request, res: express.Respo
   return res.json({ data: randomizedEndpoints })
 })
 
-
 /**
  * Gets a randomized list of content node endpoints
  */
 router.get('/content', async (req: express.Request, res: express.Response) => {
-  const randomizedEndpoints = shuffle(usableContentNodes.map(s => s.endpoint))
+  const randomizedEndpoints = shuffle(usableContentNodes.map((s) => s.endpoint))
   return res.json({ data: randomizedEndpoints })
 })
-
 
 /**
  * Gets a randomized list of content node endpoints with verbose data
@@ -117,4 +115,3 @@ router.get('/content/verbose', async (req: express.Request, res: express.Respons
   const randomizedEndpoints = shuffle(usableContentNodes)
   return res.json({ data: randomizedEndpoints })
 })
-
