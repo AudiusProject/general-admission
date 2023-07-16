@@ -28,7 +28,7 @@ let usableContentNodes: Node[] = []
 
 const updateDiscoveryProviders = async () => {
   // Get all services (no healthy check)
-  const allDiscoveryProviders = await libs.ServiceProvider.listDiscoveryProviders()
+  allDiscoveryProviders = await libs.ServiceProvider.listDiscoveryProviders()
 
   // Get healthy services
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
