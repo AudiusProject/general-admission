@@ -43,7 +43,14 @@ const updateDiscoveryProviders = async () => {
   console.info(LOG_PREFIX, `Updating internal discovery node hosts ${JSON.stringify(services)}`)
   if (services.length > MIN_HEALTHY_SERVICES) {
     console.info(LOG_PREFIX, `Enough services found ${services.length} > ${MIN_HEALTHY_SERVICES}`)
-    usableDiscoveryProviders = services
+    usableDiscoveryProviders = services.map((s: Node) => ({
+      owner: s.owner,
+      endpoint: s.endpoint,
+      spID: s.spID,
+      type: s.type,
+      blockNumber: s.blockNumber,
+      delegateOwnerWallet: s.delegateOwnerWallet
+    }))
   } else {
     console.info(LOG_PREFIX, `Not enough healthy services found, returning everything`)
     usableDiscoveryProviders = allDiscoveryProviders
