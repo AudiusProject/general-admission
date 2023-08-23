@@ -16,7 +16,7 @@ import { formatDate, formatSeconds } from '../utils/format'
 import { encodeHashId } from '../utils/hashids'
 import {
   formatGateway,
-  getCollection,
+  getCollectionByHandleAndSlug,
   getExploreInfo,
   getImageUrl,
   getTrackByHandleAndSlug,
@@ -109,23 +109,19 @@ const getTrackContext = async (
 }
 
 const getCollectionContext = async (
-  id: number,
+  handle: string,
+  title: string,
   canEmbed: boolean
 ): Promise<Context> => {
-  if (!id) return getDefaultContext()
+  if (!handle || !title) return getDefaultContext()
   try {
-    const collection = await getCollection(id)
-    const user = await getUser(collection.playlist_owner_id)
-    const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
-
-    const coverArt = collection.playlist_image_sizes_multihash
-      ? `${collection.playlist_image_sizes_multihash}/1000x1000.jpg`
-      : collection.playlist_image_multihash
+    const collection = await getCollectionByHandleAndSlug(handle, title)
+    const user = collection.user
     return {
       format: MetaTagFormat.Collection,
       title: `${collection.playlist_name} • ${user.name}`,
       description: collection.description || '',
-      image: getImageUrl(coverArt, gateway),
+      image: collection.artwork['1000x1000'],
       embed: canEmbed,
       embedUrl: getCollectionEmbedUrl(
         collection.is_album ? Playable.ALBUM : Playable.PLAYLIST,
@@ -387,7 +383,7 @@ const getResponse = async (
       break
     case MetaTagFormat.Collection:
       console.log('get collection', req.path, id, userAgent)
-      context = await getCollectionContext(id, canEmbed)
+      context = await getCollectionContext(handle, title, canEmbed)
       break
     case MetaTagFormat.User:
       console.log('get user', req.path, handle, userAgent)
