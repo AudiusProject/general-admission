@@ -126,6 +126,19 @@ export const getCollection = async (id: number): Promise<any> => {
   throw new Error(`Failed to get collection ${id}`)
 }
 
+export const getCollectionByHandleAndSlug = async (handle: string, slug: string): Promise<any> => {
+  const url = `${
+    libs.discoveryProvider.discoveryProviderEndpoint
+  }/v1/full/playlists/by_permalink/${encodeURIComponent(
+    handle
+  )}/${encodeURIComponent(slug)}`
+  const res = await fetch(url)
+  const { data: playlist } = await res.json()
+  if (playlist) return Array.isArray(playlist) ? playlist[0] : playlist
+
+  return playlist
+}
+
 export const getUser = async (id: number): Promise<UserModel> => {
   const u = await libs.User.getUsers(1, 0, [id])
   if (u && u[0]) return u[0]
