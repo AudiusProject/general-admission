@@ -30,8 +30,8 @@ const RELEASE_DATE_FORMAT = 'ddd MMM DD YYYY HH:mm:ss GMTZZ'
 
 const E = process.env
 
-const getCollectionEmbedUrl = (type: Playable, id: number, ownerId: number) => {
-  return `${E.PUBLIC_URL}/embed/${type}?id=${id}&ownerId=${ownerId}&flavor=card&twitter=true`
+const getCollectionEmbedUrl = (type: Playable, hashId: string) => {
+  return `${E.PUBLIC_URL}/embed/${type}/${hashId}?flavor=card&twitter=true`
 }
 
 const getTrackEmbedUrl = (type: Playable, hashId: string) => {
@@ -125,8 +125,7 @@ const getCollectionContext = async (
       embed: canEmbed,
       embedUrl: getCollectionEmbedUrl(
         collection.is_album ? Playable.ALBUM : Playable.PLAYLIST,
-        collection.playlist_id,
-        collection.playlist_owner_id
+        collection.id,
       ),
     }
   } catch (e) {
