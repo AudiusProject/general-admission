@@ -4,7 +4,7 @@ jobs:
   init:
     working_directory: ~/general-admission
     docker:
-      - image: circleci/node:14.16
+      - image: cimg/node:18.17
     steps:
       - checkout
 
@@ -35,22 +35,10 @@ jobs:
           paths:
             - node_modules
 
-  # test-staging:
-  #   working_directory: ~/general-admission
-  #   docker:
-  #     - image: circleci/node:14.16
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: ./
-  #     - run:
-  #         name: run test
-  #         command: npm run test:stage
-
   test-production:
     working_directory: ~/general-admission
     docker:
-      - image: circleci/node:14.16
+      - image: cimg/node:18.17
     steps:
       - checkout
       - attach_workspace:
@@ -64,26 +52,9 @@ workflows:
   test:
     jobs:
       - init
-      # - test-staging:
-      #     requires:
-      #       - init
       - test-production:
           requires:
             - init
-
-  # staging:
-  #   triggers:
-  #     - schedule:
-  #         cron: "0,10,20,30,40,50 * * * * "
-  #         filters:
-  #           branches:
-  #             only:
-  #               - master
-  #   jobs:
-  #     - init
-  #     - test-staging:
-  #         requires:
-  #           - init
 
   production:
     triggers:
