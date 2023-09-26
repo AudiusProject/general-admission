@@ -1,4 +1,4 @@
-FROM node:14.17
+FROM node:18.16
 RUN apt-get install make
 
 WORKDIR /home/node/app
