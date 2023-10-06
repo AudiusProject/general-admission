@@ -47,7 +47,7 @@ const BUILD_PATH_EXTRACT = path.resolve(__dirname, '../../')
 const makeBuildPath = (name: string) => path.resolve(__dirname, `../../${name}`)
 
 // Fetches the protocol dashboard build folder
-// /update_builds?site=protocolDashboard
+// /update_builds?site=protocol-dashboard
 router.get(
   '/update_build',
   async (req: express.Request, res: express.Response) => {
@@ -57,17 +57,22 @@ router.get(
         res.status(500).send(`Build URLS not specified`)
         return
       }
+
+      // Download zip
       const buildUrl = BUILD_URLS[site]!
+      const zipPath = makeBuildZipPath(site)
+      console.log(`Downloading build for ${site} from ${buildUrl} to ${zipPath}`)
       const response = await fetch(buildUrl)
       await new Promise((resolve, reject) => {
-        const fileStream = fs.createWriteStream(makeBuildZipPath(site))
+        const fileStream = fs.createWriteStream(zipPath)
         response.body.pipe(fileStream)
         response.body.on('error', (err: Error) => reject(err))
         fileStream.on('finish', () => resolve(true))
       })
 
+      // Unzip
       await new Promise((resolve, reject) => {
-        const unzipStream = fs.createReadStream(makeBuildZipPath(site))
+        const unzipStream = fs.createReadStream(zipPath)
         unzipStream.on('close', () => resolve(true))
         unzipStream.on('error', reject)
         unzipStream.pipe(unzipper.Extract({ path: BUILD_PATH_EXTRACT }))
@@ -87,6 +92,7 @@ router.get(
     const site = req.query.site as buildType
     const buildUrl = BUILD_URLS[site]!
     const buildFileName = buildUrl.split('/').slice(-1)[0].replace('.zip', '')
+    console.log(`Pinning files from ${buildFileName}`)
     try {
       const files = []
       for await (const file of ipfs.add(
