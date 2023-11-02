@@ -22,7 +22,7 @@ export const REMIXABLES =
   'https://download.audius.co/static-resources/remixables.jpeg'
 export const UNDERGROUND_TRENDING =
   'https://download.audius.co/static-resources/underground-trending.png'
-export const PREMIUM_TRACKS = 
+export const PREMIUM_TRACKS =
   'https://download.audius.co/static-resources/premium-tracks.png'
 export const SIGNUP_REF_IMAGE_URL =
   'https://download.audius.co/static-resources/signup_referral.png'
