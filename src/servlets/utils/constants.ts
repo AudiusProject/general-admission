@@ -20,8 +20,10 @@ export const FEELING_LUCKY_URL =
   'https://download.audius.co/static-resources/feeling-lucky.png'
 export const REMIXABLES =
   'https://download.audius.co/static-resources/remixables.jpeg'
-export const UNDERGROUND_TRENDING_URL =
+export const UNDERGROUND_TRENDING =
   'https://download.audius.co/static-resources/underground-trending.png'
+export const PREMIUM_TRACKS =
+  'https://download.audius.co/static-resources/premium-tracks.png'
 export const SIGNUP_REF_IMAGE_URL =
   'https://download.audius.co/static-resources/signup_referral.png'
 export const USER_NODE_IPFS_GATEWAY = 'https://usermetadata.audius.co/ipfs/'
@@ -77,7 +79,7 @@ export const exploreMap: { [key: string]: ExploreInfoType } = {
     title: 'Underground Trending',
     description:
       'Some of the best up-and-coming music on Audius all in one place',
-    image: UNDERGROUND_TRENDING_URL,
+    image: UNDERGROUND_TRENDING,
   },
   'most-loved': {
     title: 'Most Loved',
@@ -95,4 +97,9 @@ export const exploreMap: { [key: string]: ExploreInfoType } = {
       'Popular tracks with remixes & stems you can use in your own tracks',
     image: REMIXABLES,
   },
+  'premium-tracks': {
+    title: 'Premium Tracks',
+    description: 'Explore premium music available to purchase.',
+    image: PREMIUM_TRACKS
+  }
 }
