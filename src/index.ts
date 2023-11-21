@@ -4,11 +4,9 @@ import path from 'path'
 
 import './fetch-polyfill'
 import { startup } from './onStartup'
-import { BedtimeFormat } from './servlets/bedtime/types'
 import { MetaTagFormat } from './servlets/metaTags/types'
 
 import { router as apiRouter } from './servlets/api'
-import { getBedtimeResponse } from './servlets/bedtime'
 import { router as healthRouter } from './servlets/health'
 import { router as ipfsRouter } from './servlets/ipfs'
 import getMetaTagsResponse from './servlets/metaTags'
@@ -21,33 +19,6 @@ const PORT = 8000
 const app = express()
 app.use(cors())
 const router = express.Router()
-
-/** Bedtime Routes */
-
-router.get(
-  ['/embed/api/tracks/:id', '/embed/api/tracks/hashid/:hashId'],
-  (req: express.Request, res: express.Response) => {
-    getBedtimeResponse(BedtimeFormat.TRACK, req, res)
-  }
-)
-
-router.get(
-  ['/embed/api/collections/:id', '/embed/api/collections/hashid/:hashId'],
-  (req: express.Request, res: express.Response) => {
-    getBedtimeResponse(BedtimeFormat.COLLECTION, req, res)
-  }
-)
-
-router.get(
-  [
-    '/embed/api/:handle/audio-nft-playlist',
-    '/embed/api/:handle/collectibles',
-    '/embed/api/:handle/collectibles/:collectibleId'
-  ],
-  (req: express.Request, res: express.Response) => {
-    getBedtimeResponse(BedtimeFormat.COLLECTIBLES, req, res)
-  }
-)
 
 /** Metatag Routes */
 

@@ -65,21 +65,16 @@ http {
       proxy_pass http://node:8000;
     }
 
-    # Proxy bedtime api.js before /embed/api
+    # Proxy embed player controls api.js
     location = /embed/api.js {
-      proxy_pass ${BEDTIME_URL}api.js;
-    }
-
-    # Bedtime API routes.
-    location /embed/api {
-      proxy_pass http://node:8000;
+      proxy_pass ${EMBED_PLAYER_URL}api.js;
     }
 
     # Proxy bedtime player
     # strips off `embed` portion of the URI
-    # before forwarding to the BEDTIME_URL
+    # before forwarding to the EMBED_PLAYER_URL
     location /embed/ {
-      proxy_pass ${BEDTIME_URL};
+      proxy_pass ${EMBED_PLAYER_URL};
     }
 
     # Proxy social

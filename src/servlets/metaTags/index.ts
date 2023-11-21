@@ -5,7 +5,6 @@ import handlebars from 'handlebars'
 import path from 'path'
 
 import libs from '../../libs'
-import { getHash } from '../bedtime/helpers'
 import {
   AUDIO_REWARDS_IMAGE_URL,
   DEFAULT_IMAGE_URL,
@@ -18,6 +17,7 @@ import {
   formatGateway,
   getCollectionByHandleAndSlug,
   getExploreInfo,
+  getHash,
   getImageUrl,
   getTrackByHandleAndSlug,
   getUser,
