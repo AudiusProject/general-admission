@@ -202,7 +202,6 @@ const REDIRECT_TRACK_ID_RANGE = [416972, 418372]
 export const shouldRedirectTrack = (trackId: number) =>
   trackId >= REDIRECT_TRACK_ID_RANGE[0] && trackId <= REDIRECT_TRACK_ID_RANGE[1]
 
-
 /**
  * Generate a short base36 hash for a given string.
  * Used to generate short hashes for for queries and urls.
