@@ -84,4 +84,4 @@ router.get(
     const url = req.query.url as string
     request.get(url).pipe(expressRes)
   }
-);
+)
