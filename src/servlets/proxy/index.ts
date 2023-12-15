@@ -82,19 +82,6 @@ router.get(
   '/simple',
   async (req: express.Request, expressRes: express.Response) => {
     const url = req.query.url as string
-    const result = await new Promise((resolve, reject) => {
-      request({
-        url,
-        headers: {
-          'Access-Control-Allow-Method': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': '*',
-        },
-      }).then(
-        (res) => resolve(res),
-        (error) => reject(error)
-      )
-    })
-    expressRes.send(result)
+    request.get(url).pipe(expressRes)
   }
 )
