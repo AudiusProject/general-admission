@@ -26,6 +26,7 @@ export const PREMIUM_TRACKS =
   'https://download.audius.co/static-resources/premium-tracks.png'
 export const SIGNUP_REF_IMAGE_URL =
   'https://download.audius.co/static-resources/signup_referral.png'
+export const USER_NODE_IPFS_GATEWAY = 'https://usermetadata.audius.co/ipfs/'
 
 export interface ExploreInfoType {
   title: string
