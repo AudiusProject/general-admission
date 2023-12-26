@@ -8,7 +8,6 @@ import { MetaTagFormat } from './servlets/metaTags/types'
 
 import { router as apiRouter } from './servlets/api'
 import { router as healthRouter } from './servlets/health'
-import { router as ipfsRouter } from './servlets/ipfs'
 import getMetaTagsResponse from './servlets/metaTags'
 import { router as proxyRouter } from './servlets/proxy'
 
@@ -123,7 +122,6 @@ router.get('*', (req: express.Request, res: express.Response) => {
 
 app.use(express.static(path.resolve(__dirname + '/public')))
 app.use('/api', apiRouter)
-app.use('/ipfs', ipfsRouter)
 app.use('/health_check', healthRouter)
 app.use('/proxy', proxyRouter)
 app.use('/', router)

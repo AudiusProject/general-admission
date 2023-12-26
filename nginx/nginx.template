@@ -60,11 +60,6 @@ http {
       proxy_pass http://node:8000;
     }
 
-    # IPFS routes.
-    location /ipfs/ {
-      proxy_pass http://node:8000;
-    }
-
     # Proxy embed player controls api.js
     location = /embed/api.js {
       proxy_pass ${EMBED_PLAYER_URL}api.js;

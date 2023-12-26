@@ -33,19 +33,6 @@ services:
       options:
         max-size: 1g
 
-  ipfs:
-    container_name: ipfs
-    image: ipfs/go-ipfs:v0.9.1
-    ports:
-      - "4001:4001" # ipfs swarm
-      - "5001:5001" # ipfs api
-      - "8080:8080" # ipfs gateway
-    volumes:
-      - ./compose/ipfs:/data/ipfs
-    logging:
-      options:
-        max-size: 500m
-
 networks:
   default:
     name: general_admission
