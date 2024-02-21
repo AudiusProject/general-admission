@@ -12,8 +12,10 @@
     <meta property="og:description" content="{{description}}" />
 
     <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image:aspect_ratio" content="1:1" />
     <meta property="fc:frame:button:1" content="Listen on Audius!" />
-    <meta property="fc:frame:button:1:action" link="{{appUrl}}" />
+    <meta property="fc:frame:button:1:action" content="link" />
+    <meta property="fc:frame:button:1:target" content="{{webUrl}}" />
 
     {{#if thumbnail}}
       <meta property="og:image" content="{{image}}" />
