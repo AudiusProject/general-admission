@@ -428,6 +428,7 @@ const getResponse = async (
   }
 
   context.appUrl = `audius:/${req.url}`
+  context.webUrl = `https://audius.co${req.url}`
 
   const html = template(context)
   return res.send(html)
