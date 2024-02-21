@@ -25,6 +25,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: node
+    mem_limit: 3g
     restart: unless-stopped
     volumes:
       # Mount the code for hot reloading

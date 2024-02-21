@@ -22,7 +22,7 @@ cd general-admission
 
 cp .env.stage .env # or .env.prod
 
-docker-compose up --build
+docker compose up --build -d
 ```
 
 visit http://localhost:9000.
@@ -30,7 +30,7 @@ visit http://localhost:9000.
 and to stop it:
 
 ```
-docker-compose down
+docker compose down
 ```
 
 or if you want to run just the node service:
