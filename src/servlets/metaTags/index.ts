@@ -420,7 +420,7 @@ const getResponse = async (
     case MetaTagFormat.SignupRef:
       console.log('get signup ref', req.path, userAgent)
       if (rf) {
-        context = await getSignupRefContext(ref as string)
+        context = await getSignupRefContext(rf as string)
       } else if (ref) {
         context = await getSignupRefContext(ref as string)
       } else {
