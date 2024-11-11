@@ -349,10 +349,10 @@ const getTokenContext = (): Context => {
   }
 }
 
-const getSignupRefContext = (handle: string): Context => {
+const getSignupRefContext = (handle?: string): Context => {
   return {
     format: MetaTagFormat.SignupRef,
-    title: `Invite to join Audius from @${handle}!`,
+    title: handle ? `Invite to join Audius from @${handle}!` : 'Invite to join Audius',
     description:
       'Sign up for Audius to earn $AUDIO tokens while using the app!',
     image: SIGNUP_REF_IMAGE_URL,
@@ -366,7 +366,7 @@ const getResponse = async (
   res: express.Response
 ) => {
   const { title, handle, type, collectibleId } = req.params
-  const { ref } = req.query
+  const { ref, rf } = req.query
 
   const userAgent = req.get('User-Agent') || ''
   const canEmbed = CAN_EMBED_USER_AGENT_REGEX.test(userAgent.toLowerCase())
@@ -419,7 +419,13 @@ const getResponse = async (
       break
     case MetaTagFormat.SignupRef:
       console.log('get signup ref', req.path, userAgent)
-      context = await getSignupRefContext(ref as string)
+      if (rf) {
+        context = await getSignupRefContext(ref as string)
+      } else if (ref) {
+        context = await getSignupRefContext(ref as string)
+      } else {
+        context = await getSignupRefContext()
+      }
       break
     case MetaTagFormat.Error:
     default:
