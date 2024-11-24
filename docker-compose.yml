@@ -6,6 +6,7 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
+    restart: unless-stopped
     volumes:
       - ./nginx:/home/nginx
     env_file:
