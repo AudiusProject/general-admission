@@ -1,0 +1,27 @@
+version: "3.5"
+
+services:
+  node:
+    container_name: ga
+    image: nodejs:alpine
+    build:
+      context: ./ga
+      dockerfile: ./ga/Dockerfile
+    ports:
+      - "9001:8000"
+    volumes:
+      - ./ga:/usr/src/app
+    
+  social:
+    container_name: social
+    build:
+      context: ./social
+      dockerfile: ./social/Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./social:/home/node/app
+
+networks:
+  default:
+    name: general_admission

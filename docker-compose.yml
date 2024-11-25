@@ -23,14 +23,23 @@ services:
     ports:
       - "9001:8000"
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./ga
+      dockerfile: ./ga/Dockerfile
     container_name: node
     mem_limit: 3g
     restart: unless-stopped
-    volumes:
-      # Mount the code for hot reloading
-      - .:/usr/src/app
+    logging:
+      options:
+        max-size: 1g
+    
+  social:
+    container_name: social
+    ports:
+      - "8001:8001"
+    build:
+      context: ./social
+      dockerfile: ./social/Dockerfile
+    restart: unless-stopped
     logging:
       options:
         max-size: 1g
