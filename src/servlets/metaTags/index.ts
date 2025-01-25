@@ -48,9 +48,8 @@ const getCollectiblesEmbedUrl = (
   handle: string,
   isDiscord: boolean = false
 ) => {
-  return `${E.PUBLIC_URL}/embed/${
-    isDiscord ? 'track/' : ''
-  }${handle}/collectibles`
+  return `${E.PUBLIC_URL}/embed/${isDiscord ? 'track/' : ''
+    }${handle}/collectibles`
 }
 
 const getCollectibleEmbedUrl = (
@@ -58,9 +57,8 @@ const getCollectibleEmbedUrl = (
   collectibleId: string,
   isDiscord: boolean = false
 ) => {
-  return `${E.PUBLIC_URL}/embed/${
-    isDiscord ? 'track/' : ''
-  }${handle}/collectibles/${collectibleId}`
+  return `${E.PUBLIC_URL}/embed/${isDiscord ? 'track/' : ''
+    }${handle}/collectibles/${collectibleId}`
 }
 
 /** Routes */
@@ -360,6 +358,16 @@ const getSignupRefContext = (handle?: string): Context => {
   }
 }
 
+const getDownloadAppContext = (): Context => {
+  return {
+    format: MetaTagFormat.DownloadApp,
+    title: "Audius Download",
+    description: "Artists Deserve More.",
+    image: DEFAULT_IMAGE_URL,
+    thumbnail: false
+  }
+}
+
 const getResponse = async (
   format: MetaTagFormat,
   req: express.Request,
@@ -427,6 +435,9 @@ const getResponse = async (
         context = await getSignupRefContext()
       }
       break
+    case MetaTagFormat.DownloadApp:
+      console.log('get download app', req.path, userAgent)
+      context = await getDownloadAppContext()
     case MetaTagFormat.Error:
     default:
       console.log('get default', req.path, userAgent)
