@@ -11,6 +11,7 @@ export enum MetaTagFormat {
   Error,
   AUDIO,
   SignupRef,
+  DownloadApp
 }
 
 export enum Playable {

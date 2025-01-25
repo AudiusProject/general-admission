@@ -76,6 +76,10 @@ router.get(
     '/:handle/reposts'
   ],
   (req: express.Request, res: express.Response) => {
+    const { handle } = req.params
+    if (handle.trim() === "download") {
+      return getMetaTagsResponse(MetaTagFormat.DownloadApp, req, res)
+    }
     getMetaTagsResponse(MetaTagFormat.User, req, res)
   }
 )
