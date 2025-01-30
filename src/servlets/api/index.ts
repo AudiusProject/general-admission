@@ -7,7 +7,7 @@ import { shuffle } from '../utils/helpers'
 
 const LOG_PREFIX = 'servelet: api | '
 const DISCOVERY_PROVIDER_REFRESH_INTERVAL = 60 * 1000 // one minute
-const MIN_HEALTHY_SERVICES = 8
+const MIN_HEALTHY_SERVICES = 3
 const MIN_BLOCK_DIFFERENCE = 50
 
 type Node = {
@@ -30,6 +30,25 @@ const updateDiscoveryProviders = async () => {
   // Get all services (no healthy check)
   allDiscoveryProviders = await libs.ServiceProvider.listDiscoveryProviders()
 
+  // TODO: temp fix for legacy discovery providers
+  allDiscoveryProviders = allDiscoveryProviders.filter(node => {
+    const allowedEndpoints = [
+      'https://discoveryprovider.audius.co',
+      'https://discoveryprovider2.audius.co', 
+      'https://discoveryprovider3.audius.co',
+      'https://audius-dp.amsterdam.creatorseed.com',
+      'https://audius-dp.singapore.creatorseed.com',
+      'https://audius-dn1.tikilabs.com',
+      'https://dn1.monophonic.digital',
+      'https://audius-metadata-1.figment.io',
+      'https://audius-metadata-2.figment.io',
+      'https://audius-metadata-3.figment.io',
+      'https://audius-metadata-4.figment.io',
+      'https://audius-metadata-5.figment.io'
+    ]
+    return allowedEndpoints.some(endpoint => node.endpoint.indexOf(endpoint) >= 0)
+  })
+  
   // Get healthy services
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
   console.info(LOG_PREFIX, `Registered version ${registeredVersion}`)
