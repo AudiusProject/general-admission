@@ -34,21 +34,12 @@ const updateDiscoveryProviders = async () => {
   allDiscoveryProviders = allDiscoveryProviders.filter(node => {
     const allowedEndpoints = [
       'https://discoveryprovider.audius.co',
-      'https://discoveryprovider2.audius.co', 
-      'https://discoveryprovider3.audius.co',
-      'https://audius-dp.amsterdam.creatorseed.com',
-      'https://audius-dp.singapore.creatorseed.com',
-      'https://audius-dn1.tikilabs.com',
-      'https://dn1.monophonic.digital',
-      'https://audius-metadata-1.figment.io',
-      'https://audius-metadata-2.figment.io',
-      'https://audius-metadata-3.figment.io',
-      'https://audius-metadata-4.figment.io',
-      'https://audius-metadata-5.figment.io'
+      'https://discoveryprovider2.audius.co',
+      'https://discoveryprovider3.audius.co'
     ]
     return allowedEndpoints.some(endpoint => node.endpoint.indexOf(endpoint) >= 0)
   })
-  
+
   // Get healthy services
   const registeredVersion = await libs.ethContracts.getCurrentVersion('discovery-node')
   console.info(LOG_PREFIX, `Registered version ${registeredVersion}`)
