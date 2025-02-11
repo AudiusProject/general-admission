@@ -35,7 +35,15 @@ const updateDiscoveryProviders = async () => {
     const allowedEndpoints = [
       'https://discoveryprovider.audius.co',
       'https://discoveryprovider2.audius.co',
-      'https://discoveryprovider3.audius.co'
+      'https://discoveryprovider3.audius.co',
+      'https://audius-dn1.tikilabs.com',
+      'https://dn1.monophonic.digital',
+      'https://audius-metadata-1.figment.io',
+      'https://audius-metadata-2.figment.io',
+      'https://audius-metadata-3.figment.io',
+      'https://audius-metadata-4.figment.io',
+      'https://audius-metadata-5.figment.io',
+      'https://dn0.mainnet.audiusindex.org',
     ]
     return allowedEndpoints.some(endpoint => node.endpoint.indexOf(endpoint) >= 0)
   })
