@@ -16,13 +16,6 @@ http {
   proxy_pass_header Authorization;
 
   server {
-    server_name ${API_SUBDOMAIN};
-    location / {
-      proxy_pass http://127.0.0.1/api;
-    }
-  }
-
-  server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
@@ -50,26 +43,9 @@ http {
       proxy_pass ${APP_URL};
     }
 
-    # API routes.
-    location /api {
-      proxy_pass http://node:8000;
-    }
-
     # Health routes.
     location /health_check {
       proxy_pass http://node:8000;
-    }
-
-    # Proxy embed player controls api.js
-    location = /embed/api.js {
-      proxy_pass ${EMBED_PLAYER_URL}api.js;
-    }
-
-    # Proxy bedtime player
-    # strips off `embed` portion of the URI
-    # before forwarding to the EMBED_PLAYER_URL
-    location /embed/ {
-      proxy_pass ${EMBED_PLAYER_URL};
     }
 
     # Proxy social

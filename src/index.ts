@@ -6,7 +6,6 @@ import './fetch-polyfill'
 import { startup } from './onStartup'
 import { MetaTagFormat } from './servlets/metaTags/types'
 
-import { router as apiRouter } from './servlets/api'
 import { router as healthRouter } from './servlets/health'
 import getMetaTagsResponse from './servlets/metaTags'
 import { router as proxyRouter } from './servlets/proxy'
@@ -125,7 +124,6 @@ router.get('*', (req: express.Request, res: express.Response) => {
 })
 
 app.use(express.static(path.resolve(__dirname + '/public')))
-app.use('/api', apiRouter)
 app.use('/health_check', healthRouter)
 app.use('/proxy', proxyRouter)
 app.use('/', router)
