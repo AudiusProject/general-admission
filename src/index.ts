@@ -1,139 +1,143 @@
-import cors from 'cors'
-import express from 'express'
-import path from 'path'
+import cors from "cors";
+import express from "express";
+import path from "path";
 
-import './fetch-polyfill'
-import { startup } from './onStartup'
-import { MetaTagFormat } from './servlets/metaTags/types'
+import "./fetch-polyfill";
+import { startup } from "./onStartup";
+import { MetaTagFormat } from "./servlets/metaTags/types";
 
-import { router as healthRouter } from './servlets/health'
-import getMetaTagsResponse from './servlets/metaTags'
-import { router as proxyRouter } from './servlets/proxy'
+import { router as healthRouter } from "./servlets/health";
+import getMetaTagsResponse from "./servlets/metaTags";
+import { router as proxyRouter } from "./servlets/proxy";
+import { ogImageRouter } from "./servlets/ogImage";
 
-import libs from './libs'
+import libs from "./libs";
 
-const PORT = 8000
+const PORT = 8000;
 
-const app = express()
-app.use(cors())
-const router = express.Router()
+const app = express();
+app.use(cors());
+const router = express.Router();
 
 /** Metatag Routes */
 
 router.get(
-  ['/upload', '/upload/:type'],
+  ["/upload", "/upload/:type"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Upload, req, res)
+    getMetaTagsResponse(MetaTagFormat.Upload, req, res);
   }
-)
+);
 
 router.get(
-  ['/explore', '/explore/:type'],
+  ["/explore", "/explore/:type"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Explore, req, res)
+    getMetaTagsResponse(MetaTagFormat.Explore, req, res);
   }
-)
+);
 
 router.get(
-  '/trending/playlists',
+  "/trending/playlists",
   (req: express.Request, res: express.Response) => {
-    req.params.type = 'trending-playlists'
-    getMetaTagsResponse(MetaTagFormat.Explore, req, res)
+    req.params.type = "trending-playlists";
+    getMetaTagsResponse(MetaTagFormat.Explore, req, res);
   }
-)
+);
 
-router.get('/error', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.Error, req, res)
-})
+router.get("/error", (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.Error, req, res);
+});
 
-router.get('/signup', (req: express.Request, res: express.Response) => {
+router.get("/signup", (req: express.Request, res: express.Response) => {
   getMetaTagsResponse(
-    (req.query.ref || req.query.rf) ? MetaTagFormat.SignupRef : MetaTagFormat.Default,
+    req.query.ref || req.query.rf
+      ? MetaTagFormat.SignupRef
+      : MetaTagFormat.Default,
     req,
     res
-  )
-})
+  );
+});
 
 // Override default metatags
 router.get(
-  ['/check', '/undefined', '/press'],
+  ["/check", "/undefined", "/press"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    getMetaTagsResponse(MetaTagFormat.Default, req, res);
   }
-)
+);
 
-router.get('/audio', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.AUDIO, req, res)
-})
+router.get("/audio", (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.AUDIO, req, res);
+});
 
 router.get(
   [
-    '/:handle',
-    '/:handle/tracks',
-    '/:handle/playlists',
-    '/:handle/albums',
-    '/:handle/reposts'
+    "/:handle",
+    "/:handle/tracks",
+    "/:handle/playlists",
+    "/:handle/albums",
+    "/:handle/reposts",
   ],
   (req: express.Request, res: express.Response) => {
-    const { handle } = req.params
+    const { handle } = req.params;
     if (handle.trim() === "download") {
-      return getMetaTagsResponse(MetaTagFormat.DownloadApp, req, res)
+      return getMetaTagsResponse(MetaTagFormat.DownloadApp, req, res);
     }
-    getMetaTagsResponse(MetaTagFormat.User, req, res)
+    getMetaTagsResponse(MetaTagFormat.User, req, res);
   }
-)
+);
 
 router.get(
-  ['/:handle/collectibles/:collectibleId'],
+  ["/:handle/collectibles/:collectibleId"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Collectible, req, res)
+    getMetaTagsResponse(MetaTagFormat.Collectible, req, res);
   }
-)
+);
 
 router.get(
-  ['/:handle/collectibles', '/:handle/audio-nft-playlist'],
+  ["/:handle/collectibles", "/:handle/audio-nft-playlist"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Collectibles, req, res)
+    getMetaTagsResponse(MetaTagFormat.Collectibles, req, res);
   }
-)
+);
 
 router.get(
-  '/:handle/:title/remixes',
+  "/:handle/:title/remixes",
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Remixes, req, res)
+    getMetaTagsResponse(MetaTagFormat.Remixes, req, res);
   }
-)
+);
 
-router.get('/:handle/:title', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.Track, req, res)
-})
+router.get("/:handle/:title", (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.Track, req, res);
+});
 
 router.get(
-  ['/:handle/album/:title', '/:handle/playlist/:title'],
+  ["/:handle/album/:title", "/:handle/playlist/:title"],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Collection, req, res)
+    getMetaTagsResponse(MetaTagFormat.Collection, req, res);
   }
-)
+);
 
-router.get('/', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.Default, req, res)
-})
+router.get("/", (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.Default, req, res);
+});
 
-router.get('*', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.Default, req, res)
-})
+router.get("*", (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.Default, req, res);
+});
 
-app.use(express.static(path.resolve(__dirname + '/public')))
-app.use('/health_check', healthRouter)
-app.use('/proxy', proxyRouter)
-app.use('/', router)
+app.use(express.static(path.resolve(__dirname + "/public")));
+app.use("/health_check", healthRouter);
+app.use("/proxy", proxyRouter);
+app.use("/og-image", ogImageRouter);
+app.use("/", router);
 
 const start = async () => {
-  await libs.init()
+  await libs.init();
   app.listen(PORT, () => {
-    console.log(`Listening on ${PORT}`)
-    startup()
-  })
-}
+    console.log(`Listening on ${PORT}`);
+    startup();
+  });
+};
 
-start()
+start();
