@@ -117,9 +117,9 @@ export const getTrackByHandleAndSlug = async (
 }
 
 type CommentData = {
-  comment: any
-  track: TrackModel
-  user: UserModel
+  comment: Comment
+  track: FullTrack
+  user: FullUser
 }
 
 export const getCommentDataById = async (id: string): Promise<CommentData> => {
@@ -130,8 +130,10 @@ export const getCommentDataById = async (id: string): Promise<CommentData> => {
 
   if (!comment) throw new Error(`Failed to get comment ${id}`)
 
-  const track = related.tracks.find((t: any) => t.id === comment.entity_id)
-  const user = related.users.find((u: any) => u.id === comment.user_id)
+  const track = related.tracks.find(
+    (t: FullTrack) => t.id === comment.entity_id
+  )
+  const user = related.users.find((u: FullUser) => u.id === comment.user_id)
 
   return {
     comment,
