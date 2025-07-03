@@ -20,8 +20,8 @@ import {
   getHash,
   getImageUrl,
   getTrackByHandleAndSlug,
-  getUser,
   getUserByHandle,
+  getCommentDataById,
 } from '../utils/helpers'
 import { Context, MetaTagFormat, Playable } from './types'
 
@@ -48,8 +48,9 @@ const getCollectiblesEmbedUrl = (
   handle: string,
   isDiscord: boolean = false
 ) => {
-  return `${E.PUBLIC_URL}/embed/${isDiscord ? 'track/' : ''
-    }${handle}/collectibles`
+  return `${E.PUBLIC_URL}/embed/${
+    isDiscord ? 'track/' : ''
+  }${handle}/collectibles`
 }
 
 const getCollectibleEmbedUrl = (
@@ -57,8 +58,9 @@ const getCollectibleEmbedUrl = (
   collectibleId: string,
   isDiscord: boolean = false
 ) => {
-  return `${E.PUBLIC_URL}/embed/${isDiscord ? 'track/' : ''
-    }${handle}/collectibles/${collectibleId}`
+  return `${E.PUBLIC_URL}/embed/${
+    isDiscord ? 'track/' : ''
+  }${handle}/collectibles/${collectibleId}`
 }
 
 /** Routes */
@@ -99,6 +101,7 @@ const getTrackContext = async (
       image: track.artwork['1000x1000'],
       embed: canEmbed && !isStreamGated,
       embedUrl: getTrackEmbedUrl(Playable.TRACK, track.id),
+      entityId: track.id,
     }
   } catch (e) {
     console.error(e)
@@ -123,7 +126,7 @@ const getCollectionContext = async (
       embed: canEmbed,
       embedUrl: getCollectionEmbedUrl(
         collection.is_album ? Playable.ALBUM : Playable.PLAYLIST,
-        collection.id,
+        collection.id
       ),
     }
   } catch (e) {
@@ -137,6 +140,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
   try {
     const user = await getUserByHandle(handle)
     const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
+    const encodedUserId = encodeHashId(user.user_id)
 
     const profilePicture = user.profile_picture_sizes
       ? `${user.profile_picture_sizes}/1000x1000.jpg`
@@ -153,6 +157,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
       description: user.bio,
       additionalSEOHint: infoText,
       image: getImageUrl(profilePicture, gateway),
+      entityId: encodedUserId ?? undefined,
     }
   } catch (e) {
     console.error(e)
@@ -350,7 +355,9 @@ const getTokenContext = (): Context => {
 const getSignupRefContext = (handle?: string): Context => {
   return {
     format: MetaTagFormat.SignupRef,
-    title: handle ? `Invite to join Audius from @${handle}!` : 'Invite to join Audius',
+    title: handle
+      ? `Invite to join Audius from @${handle}!`
+      : 'Invite to join Audius',
     description:
       'Sign up for Audius to earn $AUDIO tokens while using the app!',
     image: SIGNUP_REF_IMAGE_URL,
@@ -361,10 +368,32 @@ const getSignupRefContext = (handle?: string): Context => {
 const getDownloadAppContext = (): Context => {
   return {
     format: MetaTagFormat.DownloadApp,
-    title: "Audius Download",
-    description: "Artists Deserve More.",
+    title: 'Audius Download',
+    description: 'Artists Deserve More.',
     image: DEFAULT_IMAGE_URL,
-    thumbnail: false
+    thumbnail: false,
+  }
+}
+
+const getCommentContext = async (commentId: string): Promise<Context> => {
+  if (!commentId) return getDefaultContext()
+  try {
+    const { track, user } = await getCommentDataById(commentId)
+
+    const trackName = track.title
+    const artistName = track.user.name
+    const commenterName = user.name
+
+    return {
+      format: MetaTagFormat.Comment,
+      title: `${commenterName}'s comment on ${trackName} | Audius Music`,
+      description: `Join the conversation around ${trackName} by ${artistName} — streaming on Audius`,
+      image: DEFAULT_IMAGE_URL,
+      entityId: commentId,
+    }
+  } catch (e) {
+    console.error(e)
+    return getDefaultContext()
   }
 }
 
@@ -374,7 +403,7 @@ const getResponse = async (
   res: express.Response
 ) => {
   const { title, handle, type, collectibleId } = req.params
-  const { ref, rf } = req.query
+  const { ref, rf, commentId } = req.query
 
   const userAgent = req.get('User-Agent') || ''
   const canEmbed = CAN_EMBED_USER_AGENT_REGEX.test(userAgent.toLowerCase())
@@ -438,6 +467,11 @@ const getResponse = async (
     case MetaTagFormat.DownloadApp:
       console.log('get download app', req.path, userAgent)
       context = await getDownloadAppContext()
+      break
+    case MetaTagFormat.Comment:
+      console.log('get comment', req.path, userAgent)
+      context = await getCommentContext(commentId as string)
+      break
     case MetaTagFormat.Error:
     default:
       console.log('get default', req.path, userAgent)
@@ -446,6 +480,18 @@ const getResponse = async (
 
   context.appUrl = `audius:/${req.url}`
   context.webUrl = `https://audius.co${req.url}`
+
+  // Add OG image URL based on the format
+  const ogFormatMap: Partial<Record<MetaTagFormat, string>> = {
+    // TODO: Will uncomment these when the OG image service is ready
+    // [MetaTagFormat.Track]: 'track',
+    // [MetaTagFormat.User]: 'user',
+    [MetaTagFormat.Comment]: 'comment',
+  }
+
+  if (ogFormatMap[format]) {
+    context.image = `${E.OG_URL}/og/${ogFormatMap[format]}/${context.entityId}`
+  }
 
   const html = template(context)
   return res.send(html)

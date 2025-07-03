@@ -9,6 +9,8 @@ import {
 } from './constants'
 import { encodeHashId } from './hashids'
 
+const ENV = process.env
+
 export const getTrack = async (id: number): Promise<TrackModel> => {
   const t = await libs.Track.getTracks(
     /* limit */ 1,
@@ -114,6 +116,32 @@ export const getTrackByHandleAndSlug = async (
   throw new Error(`Failed to get track ${handle}/${slug}`)
 }
 
+type CommentData = {
+  comment: Comment
+  track: FullTrack
+  user: FullUser
+}
+
+export const getCommentDataById = async (id: string): Promise<CommentData> => {
+  const url = `${ENV.API_URL}/v1/full/comments/${id}`
+  const res = await fetch(url)
+  const { data, related } = await res.json()
+  const comment = Array.isArray(data) ? data[0] : data
+
+  if (!comment) throw new Error(`Failed to get comment ${id}`)
+
+  const track = related.tracks.find(
+    (t: FullTrack) => t.id === comment.entity_id
+  )
+  const user = related.users.find((u: FullUser) => u.id === comment.user_id)
+
+  return {
+    comment,
+    track,
+    user,
+  }
+}
+
 export const getCollection = async (id: number): Promise<any> => {
   const c = await libs.Playlist.getPlaylists(
     /* limit */ 1,
@@ -126,7 +154,10 @@ export const getCollection = async (id: number): Promise<any> => {
   throw new Error(`Failed to get collection ${id}`)
 }
 
-export const getCollectionByHandleAndSlug = async (handle: string, slug: string): Promise<any> => {
+export const getCollectionByHandleAndSlug = async (
+  handle: string,
+  slug: string
+): Promise<any> => {
   const url = `${
     libs.discoveryProvider.discoveryProviderEndpoint
   }/v1/full/playlists/by_permalink/${encodeURIComponent(

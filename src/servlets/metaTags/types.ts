@@ -11,7 +11,8 @@ export enum MetaTagFormat {
   Error,
   AUDIO,
   SignupRef,
-  DownloadApp
+  DownloadApp,
+  Comment,
 }
 
 export enum Playable {
@@ -42,4 +43,7 @@ export interface Context {
   labels?: Array<{ name: string; value: string }>
 
   additionalSEOHint?: string
+
+  // For OG images
+  entityId?: string
 }
