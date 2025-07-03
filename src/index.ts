@@ -48,7 +48,9 @@ router.get('/error', (req: express.Request, res: express.Response) => {
 
 router.get('/signup', (req: express.Request, res: express.Response) => {
   getMetaTagsResponse(
-    (req.query.ref || req.query.rf) ? MetaTagFormat.SignupRef : MetaTagFormat.Default,
+    req.query.ref || req.query.rf
+      ? MetaTagFormat.SignupRef
+      : MetaTagFormat.Default,
     req,
     res
   )
@@ -72,11 +74,11 @@ router.get(
     '/:handle/tracks',
     '/:handle/playlists',
     '/:handle/albums',
-    '/:handle/reposts'
+    '/:handle/reposts',
   ],
   (req: express.Request, res: express.Response) => {
     const { handle } = req.params
-    if (handle.trim() === "download") {
+    if (handle.trim() === 'download') {
       return getMetaTagsResponse(MetaTagFormat.DownloadApp, req, res)
     }
     getMetaTagsResponse(MetaTagFormat.User, req, res)
@@ -105,7 +107,11 @@ router.get(
 )
 
 router.get('/:handle/:title', (req: express.Request, res: express.Response) => {
-  getMetaTagsResponse(MetaTagFormat.Track, req, res)
+  getMetaTagsResponse(
+    req.query.commentId ? MetaTagFormat.Comment : MetaTagFormat.Track,
+    req,
+    res
+  )
 })
 
 router.get(
