@@ -483,6 +483,7 @@ const getResponse = async (
 
   // Add OG image URL based on the format
   const ogFormatMap: Partial<Record<MetaTagFormat, string>> = {
+    // TODO: Will uncomment these when the OG image service is ready
     // [MetaTagFormat.Track]: 'track',
     // [MetaTagFormat.User]: 'user',
     [MetaTagFormat.Comment]: 'comment',
@@ -491,8 +492,6 @@ const getResponse = async (
   if (ogFormatMap[format]) {
     context.image = `${E.OG_URL}/og/${ogFormatMap[format]}/${context.entityId}`
   }
-
-  console.log({ context })
 
   const html = template(context)
   return res.send(html)
