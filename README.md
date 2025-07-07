@@ -49,3 +49,21 @@ docker run --rm ga-node -p 8000:8000 -d
 
 1. Run the dapp locally
 2. Set `APP_URL` env var in `.env` to `http://docker.for.mac.localhost:{DAPP_PORT}`
+
+## Deploy
+
+```bash
+ssh prod-general-admission # or stage-general-admission
+
+# Navigate to GA folder
+cd general-admission
+
+# Pull the latest code
+git pull
+
+# Update env files here if needed
+cp .env.prod .env # or .env.stage
+
+# Deploy
+docker compose up -d --build node
+```
