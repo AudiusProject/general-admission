@@ -16,12 +16,12 @@ import { encodeHashId } from '../utils/hashids'
 import {
   formatGateway,
   getCollectionByHandleAndSlug,
+  getCommentDataById,
   getExploreInfo,
   getHash,
   getImageUrl,
   getTrackByHandleAndSlug,
   getUserByHandle,
-  getCommentDataById,
 } from '../utils/helpers'
 import { Context, MetaTagFormat, Playable } from './types'
 
@@ -128,6 +128,7 @@ const getCollectionContext = async (
         collection.is_album ? Playable.ALBUM : Playable.PLAYLIST,
         collection.id
       ),
+      entityId: collection.id,
     }
   } catch (e) {
     console.error(e)
@@ -483,14 +484,15 @@ const getResponse = async (
 
   // Add OG image URL based on the format
   const ogFormatMap: Partial<Record<MetaTagFormat, string>> = {
-    // TODO: Will uncomment these when the OG image service is ready
-    // [MetaTagFormat.Track]: 'track',
-    // [MetaTagFormat.User]: 'user',
+    [MetaTagFormat.User]: 'user',
+    [MetaTagFormat.Track]: 'track',
+    [MetaTagFormat.Collection]: 'collection',
     [MetaTagFormat.Comment]: 'comment',
   }
 
-  if (ogFormatMap[format]) {
-    context.image = `${E.OG_URL}/og/${ogFormatMap[format]}/${context.entityId}`
+  // Only use OG URLs in staging environment
+  if (ogFormatMap[format] && E.OG_URL && E.OG_URL.includes('staging')) {
+    context.image = `${E.OG_URL}/${ogFormatMap[format]}/${context.entityId}`
   }
 
   const html = template(context)
