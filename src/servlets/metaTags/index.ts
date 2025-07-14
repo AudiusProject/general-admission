@@ -376,10 +376,20 @@ const getDownloadAppContext = (): Context => {
   }
 }
 
-const getCommentContext = async (commentId: string): Promise<Context> => {
-  if (!commentId) return getDefaultContext()
+const getCommentContext = async (
+  commentId: string,
+  handle: string,
+  title: string
+): Promise<Context> => {
+  if (!commentId || !handle || !title) return getDefaultContext()
   try {
     const { track, user } = await getCommentDataById(commentId)
+    const { id: linkTrackId } = await getTrackByHandleAndSlug(handle, title)
+
+    if (linkTrackId !== track.id) {
+      console.log('comment track does not match url track')
+      return getTrackContext(handle, title, false)
+    }
 
     const trackName = track.title
     const artistName = track.user.name
@@ -471,7 +481,7 @@ const getResponse = async (
       break
     case MetaTagFormat.Comment:
       console.log('get comment', req.path, userAgent)
-      context = await getCommentContext(commentId as string)
+      context = await getCommentContext(commentId as string, handle, title)
       break
     case MetaTagFormat.Error:
     default:
@@ -491,8 +501,10 @@ const getResponse = async (
   }
 
   // Only use OG URLs in staging environment
-  if (ogFormatMap[format] && E.OG_URL && E.OG_URL.includes('staging')) {
-    context.image = `${E.OG_URL}/${ogFormatMap[format]}/${context.entityId}`
+  if (ogFormatMap[context.format] && E.OG_URL && E.OG_URL.includes('staging')) {
+    context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
+      context.entityId
+    }`
   }
 
   const html = template(context)
