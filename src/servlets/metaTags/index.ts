@@ -4,7 +4,6 @@ import fs from 'fs'
 import handlebars from 'handlebars'
 import path from 'path'
 
-import libs from '../../libs'
 import {
   AUDIO_REWARDS_IMAGE_URL,
   DEFAULT_IMAGE_URL,
@@ -14,12 +13,10 @@ import { nftClient } from '../utils/fetchNft'
 import { formatDate, formatSeconds } from '../utils/format'
 import { encodeHashId } from '../utils/hashids'
 import {
-  formatGateway,
   getCollectionByHandleAndSlug,
   getCommentDataById,
   getExploreInfo,
   getHash,
-  getImageUrl,
   getTrackByHandleAndSlug,
   getUserByHandle,
 } from '../utils/helpers'
@@ -140,12 +137,9 @@ const getUserContext = async (handle: string): Promise<Context> => {
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
-    const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
     const encodedUserId = encodeHashId(user.user_id)
 
-    const profilePicture = user.profile_picture_sizes
-      ? `${user.profile_picture_sizes}/1000x1000.jpg`
-      : user.profile_picture
+    const profilePicture = user.profile_picture?.['1000x1000']
 
     const infoText =
       user.track_count > 0
@@ -157,7 +151,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
       title: `${user.name} (@${user.handle})`,
       description: user.bio,
       additionalSEOHint: infoText,
-      image: getImageUrl(profilePicture, gateway),
+      image: profilePicture ?? DEFAULT_IMAGE_URL,
       entityId: encodedUserId ?? undefined,
     }
   } catch (e) {
@@ -174,12 +168,6 @@ const getCollectiblesContext = async (
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
-    const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
-
-    const profilePicture = user.profile_picture_sizes
-      ? `${user.profile_picture_sizes}/1000x1000.jpg`
-      : user.profile_picture
-
     const infoText =
       user.track_count > 0
         ? `Listen to ${user.name} on Audius`
@@ -190,7 +178,7 @@ const getCollectiblesContext = async (
       title: `${user.name}'s Collectibles`,
       description: `A collection of NFT collectibles owned and created by ${user.name}`,
       additionalSEOHint: infoText,
-      image: getImageUrl(profilePicture, gateway),
+      image: user.profile_picture?.['1000x1000'] ?? DEFAULT_IMAGE_URL,
       embed: canEmbed,
       embedUrl: getCollectiblesEmbedUrl(user.handle, isDiscord),
     }
@@ -209,21 +197,15 @@ const getCollectibleContext = async (
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
-    const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
-
-    const profilePicture = user.profile_picture_sizes
-      ? `${user.profile_picture_sizes}/1000x1000.jpg`
-      : user.profile_picture
 
     const infoText =
       user.track_count > 0
         ? `Listen to ${user.name} on Audius`
         : `Follow ${user.name} on Audius`
 
-    const dp = libs.discoveryProvider.discoveryProviderEndpoint
     const encodedUserId = encodeHashId(user.user_id)
     const res = await fetch(
-      `${dp}/v1/users/associated_wallets?id=${encodedUserId}`
+      `${E.API_URL}/v1/users/associated_wallets?id=${encodedUserId}`
     )
     const { data: walletData } = await res.json()
 
@@ -267,7 +249,7 @@ const getCollectibleContext = async (
       title: `${user.name}'s Collectibles`,
       description: `A collection of NFT collectibles owned and created by ${user.name}`,
       additionalSEOHint: infoText,
-      image: getImageUrl(profilePicture, gateway),
+      image: user.profile_picture?.['1000x1000'] ?? DEFAULT_IMAGE_URL,
       embed: canEmbed,
       embedUrl: getCollectiblesEmbedUrl(user.handle),
     }

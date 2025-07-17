@@ -1,5 +1,4 @@
-import libs from '../../libs'
-import { FullTrack, Track, TrackModel, TrackSegment } from '../../types/Track'
+import { FullTrack, Track, TrackModel } from '../../types/Track'
 import { FullUser, UserModel } from '../../types/User'
 import {
   DEFAULT_IMAGE_URL,
@@ -11,23 +10,8 @@ import { encodeHashId } from './hashids'
 
 const ENV = process.env
 
-export const getTrack = async (id: number): Promise<TrackModel> => {
-  const t = await libs.Track.getTracks(
-    /* limit */ 1,
-    /* offset */ 0,
-    /* idsArray */ [id],
-    /* targetUserId */ null,
-    /* sort */ null,
-    /* minBlockNumber */ null,
-    /* filterDeleted */ null,
-    /* withUsers */ true
-  )
-  if (t && t[0]) return t[0]
-  throw new Error(`Failed to get track ${id}`)
-}
-
 export const getTracks = async (ids: number[]): Promise<TrackModel[]> => {
-  const ts = await libs.Track.getTracks(ids.length, 0, ids)
+  const ts = await fetch(`${ENV.API_URL}/v1/full/tracks?ids=${ids.join(',')}`).then(res => res.json())
   if (ts) return ts
   throw new Error(`Failed to get tracks ${ids}`)
 }
@@ -43,16 +27,6 @@ const userModelToFullUser = (user: UserModel): FullUser => {
 
 const trackModelToFullTrack = async (track: TrackModel): Promise<FullTrack> => {
   const user: UserModel = await getUser(track.owner_id)
-  const gateway = formatGateway(user.creator_node_endpoint, user.user_id)
-
-  const coverArt = track.cover_art_sizes
-    ? `${track.cover_art_sizes}/1000x1000.jpg`
-    : track.cover_art
-  const artwork = {
-    ['150x150']: null,
-    ['480x480']: null,
-    ['1000x1000']: getImageUrl(coverArt, gateway),
-  }
 
   const releaseDate = track.release_date ? track.release_date : track.created_at
   const duration = track.track_segments.reduce(
@@ -76,7 +50,7 @@ const trackModelToFullTrack = async (track: TrackModel): Promise<FullTrack> => {
     ...track,
     id: encodeHashId(track.track_id)!,
     user: userModelToFullUser(user),
-    artwork,
+    artwork: track.artwork,
     release_date: releaseDate,
     duration,
     remix_of: remixOf,
@@ -92,27 +66,10 @@ export const getTrackByHandleAndSlug = async (
   handle: string,
   slug: string
 ): Promise<Track> => {
-  const url = `${
-    libs.discoveryProvider.discoveryProviderEndpoint
-  }/v1/full/tracks?handle=${encodeURIComponent(
-    handle
-  )}&slug=${encodeURIComponent(slug)}`
+  const url = `${ENV.API_URL}/v1/full/resolve?url=/${encodeURIComponent(handle)}/${encodeURIComponent(slug)}`
   const res = await fetch(url)
   const { data: track } = await res.json()
-  if (track) return Array.isArray(track) ? track[0] : track
-
-  // Ensure at least 5 digits (anything lower has old route in the DB)
-  const matches = slug.match(/[0-9]{5,}$/)
-  if (matches) {
-    const tracks = await getTracks([parseInt(matches[0], 10)])
-    if (tracks && tracks[0] && tracks[0].permalink) {
-      const splitted = tracks[0].permalink.split('/')
-      const foundHandle = splitted.length > 0 ? splitted[1] : ''
-      if (foundHandle.toLowerCase() === handle.toLowerCase()) {
-        return trackModelToFullTrack(tracks[0])
-      }
-    }
-  }
+  if (track) return track
   throw new Error(`Failed to get track ${handle}/${slug}`)
 }
 
@@ -142,25 +99,11 @@ export const getCommentDataById = async (id: string): Promise<CommentData> => {
   }
 }
 
-export const getCollection = async (id: number): Promise<any> => {
-  const c = await libs.Playlist.getPlaylists(
-    /* limit */ 1,
-    /* offset */ 0,
-    /* idsArray */ [id],
-    /* targetUserId */ null,
-    /* withUsers */ true
-  )
-  if (c && c[0]) return c[0]
-  throw new Error(`Failed to get collection ${id}`)
-}
-
 export const getCollectionByHandleAndSlug = async (
   handle: string,
   slug: string
 ): Promise<any> => {
-  const url = `${
-    libs.discoveryProvider.discoveryProviderEndpoint
-  }/v1/full/playlists/by_permalink/${encodeURIComponent(
+  const url = `${ENV.API_URL}/v1/full/playlists/by_permalink/${encodeURIComponent(
     handle
   )}/${encodeURIComponent(slug)}`
   const res = await fetch(url)
@@ -171,37 +114,27 @@ export const getCollectionByHandleAndSlug = async (
 }
 
 export const getUser = async (id: number): Promise<UserModel> => {
-  const u = await libs.User.getUsers(1, 0, [id])
+  const u = await fetch(`${ENV.API_URL}/v1/users?ids=${encodeHashId(id)}`)
+    .then(res => res.json())
+    .then(res => res.data).then(res => res[0])
   if (u && u[0]) return u[0]
   throw new Error(`Failed to get user ${id}`)
 }
 
 export const getUsers = async (ids: number[]): Promise<UserModel[]> => {
-  const us = await libs.User.getUsers(ids.length, 0, ids)
+  const us = await fetch(`${ENV.API_URL}/v1/users?ids=${ids.map(encodeHashId).join(',')}`)
+    .then(res => res.json())
+    .then(res => res.data)
   if (us) return us
   throw new Error(`Failed to get users: ${ids}`)
 }
 
 export const getUserByHandle = async (handle: string): Promise<UserModel> => {
-  const u = await libs.User.getUsers(1, 0, null, null, handle)
-  if (u && u[0]) return u[0]
+  const u = await fetch(`${ENV.API_URL}/v1/users/handle/${handle}`)
+    .then(res => res.json())
+    .then(res => res.data)
+  if (u) return u
   throw new Error(`Failed to get user ${handle}`)
-}
-
-export const formatGateway = (
-  creatorNodeEndpoint: string,
-  userId: number
-): string =>
-  creatorNodeEndpoint
-    ? `${creatorNodeEndpoint.split(',')[0]}/ipfs/`
-    : USER_NODE_IPFS_GATEWAY
-
-export const getImageUrl = (
-  cid: string | null,
-  gateway: string | null
-): string => {
-  if (!cid) return DEFAULT_IMAGE_URL
-  return `${gateway}${cid}`
 }
 
 export const getExploreInfo = (type: string): ExploreInfoType => {

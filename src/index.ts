@@ -6,11 +6,8 @@ import './fetch-polyfill'
 import { startup } from './onStartup'
 import { MetaTagFormat } from './servlets/metaTags/types'
 
-import { router as healthRouter } from './servlets/health'
 import getMetaTagsResponse from './servlets/metaTags'
 import { router as proxyRouter } from './servlets/proxy'
-
-import libs from './libs'
 
 const PORT = 8000
 
@@ -130,12 +127,15 @@ router.get('*', (req: express.Request, res: express.Response) => {
 })
 
 app.use(express.static(path.resolve(__dirname + '/public')))
-app.use('/health_check', healthRouter)
 app.use('/proxy', proxyRouter)
 app.use('/', router)
+app.use('/health_check', (req: express.Request, res: express.Response) => {
+  res.json({
+    status: 'ok',
+  })
+})
 
 const start = async () => {
-  await libs.init()
   app.listen(PORT, () => {
     console.log(`Listening on ${PORT}`)
     startup()
