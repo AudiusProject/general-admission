@@ -116,6 +116,7 @@ export type RemixParentModel = {
 }
 
 export type TrackModel = {
+  artwork: TrackArtwork
   blockhash: string
   blocknumber: number
   cover_art_sizes: string
