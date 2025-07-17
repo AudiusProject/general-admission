@@ -10,7 +10,11 @@ import {
   SIGNUP_REF_IMAGE_URL,
 } from '../utils/constants'
 import { nftClient } from '../utils/fetchNft'
-import { formatDate, formatSeconds } from '../utils/format'
+import {
+  formatDate,
+  formatSeconds,
+  truncateDescription,
+} from '../utils/format'
 import { encodeHashId } from '../utils/hashids'
 import {
   getCollectionByHandleAndSlug,
@@ -92,7 +96,7 @@ const getTrackContext = async (
     return {
       format: MetaTagFormat.Track,
       title: `${track.title} • ${track.user.name}`,
-      description: track.description || '',
+      description: truncateDescription(track.description || '', 100),
       tags,
       labels,
       image: track.artwork['1000x1000'],
@@ -118,7 +122,7 @@ const getCollectionContext = async (
     return {
       format: MetaTagFormat.Collection,
       title: `${collection.playlist_name} • ${user.name}`,
-      description: collection.description || '',
+      description: truncateDescription(collection.description || '', 100),
       image: collection.artwork['1000x1000'],
       embed: canEmbed,
       embedUrl: getCollectionEmbedUrl(
@@ -149,7 +153,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
     return {
       format: MetaTagFormat.User,
       title: `${user.name} (@${user.handle})`,
-      description: user.bio,
+      description: truncateDescription(user.bio || '', 100),
       additionalSEOHint: infoText,
       image: profilePicture ?? DEFAULT_IMAGE_URL,
       entityId: encodedUserId ?? undefined,
