@@ -26,3 +26,10 @@ export const formatDate = (date: string, parseFormat?: string) => {
   }
   return moment(date).format('MM/DD/YY')
 }
+
+export const truncateDescription = (text: string, maxLength: number = 10) => {
+  if (!text || text.length <= maxLength) {
+    return text
+  }
+  return text.substring(0, maxLength - 3) + '...'
+}
