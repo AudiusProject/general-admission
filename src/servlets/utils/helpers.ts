@@ -11,7 +11,9 @@ import { encodeHashId } from './hashids'
 const ENV = process.env
 
 export const getTracks = async (ids: number[]): Promise<TrackModel[]> => {
-  const ts = await fetch(`${ENV.API_URL}/v1/full/tracks?ids=${ids.join(',')}`).then(res => res.json())
+  const ts = await fetch(
+    `${ENV.API_URL}/v1/full/tracks?ids=${ids.join(',')}`
+  ).then((res) => res.json())
   if (ts) return ts
   throw new Error(`Failed to get tracks ${ids}`)
 }
@@ -19,7 +21,7 @@ export const getTracks = async (ids: number[]): Promise<TrackModel[]> => {
 const userModelToFullUser = (user: UserModel): FullUser => {
   return {
     ...user,
-    id: encodeHashId(user.user_id)!,
+    id: user.id,
     cover_photo_legacy: null,
     profile_picture_legacy: null,
   }
@@ -28,7 +30,9 @@ const userModelToFullUser = (user: UserModel): FullUser => {
 const trackModelToFullTrack = async (track: TrackModel): Promise<FullTrack> => {
   const user: UserModel = await getUser(track.owner_id)
 
-  const releaseDate = track.release_date ? track.release_date : track.created_at
+  const releaseDate = track.release_date
+    ? track.release_date
+    : track.created_at
   const duration = track.track_segments.reduce(
     (acc: number, v) => (acc = acc + v.duration),
     0
@@ -66,7 +70,9 @@ export const getTrackByHandleAndSlug = async (
   handle: string,
   slug: string
 ): Promise<Track> => {
-  const url = `${ENV.API_URL}/v1/full/resolve?url=/${encodeURIComponent(handle)}/${encodeURIComponent(slug)}`
+  const url = `${ENV.API_URL}/v1/full/resolve?url=/${encodeURIComponent(
+    handle
+  )}/${encodeURIComponent(slug)}`
   const res = await fetch(url)
   const { data: track } = await res.json()
   if (track) return track
@@ -74,9 +80,9 @@ export const getTrackByHandleAndSlug = async (
 }
 
 type CommentData = {
-  comment: Comment
-  track: FullTrack
-  user: FullUser
+  comment: Comment;
+  track: FullTrack;
+  user: FullUser;
 }
 
 export const getCommentDataById = async (id: string): Promise<CommentData> => {
@@ -103,7 +109,9 @@ export const getCollectionByHandleAndSlug = async (
   handle: string,
   slug: string
 ): Promise<any> => {
-  const url = `${ENV.API_URL}/v1/full/playlists/by_permalink/${encodeURIComponent(
+  const url = `${
+    ENV.API_URL
+  }/v1/full/playlists/by_permalink/${encodeURIComponent(
     handle
   )}/${encodeURIComponent(slug)}`
   const res = await fetch(url)
@@ -115,24 +123,27 @@ export const getCollectionByHandleAndSlug = async (
 
 export const getUser = async (id: number): Promise<UserModel> => {
   const u = await fetch(`${ENV.API_URL}/v1/users?ids=${encodeHashId(id)}`)
-    .then(res => res.json())
-    .then(res => res.data).then(res => res[0])
+    .then((res) => res.json())
+    .then((res) => res.data)
+    .then((res) => res[0])
   if (u && u[0]) return u[0]
   throw new Error(`Failed to get user ${id}`)
 }
 
 export const getUsers = async (ids: number[]): Promise<UserModel[]> => {
-  const us = await fetch(`${ENV.API_URL}/v1/users?ids=${ids.map(encodeHashId).join(',')}`)
-    .then(res => res.json())
-    .then(res => res.data)
+  const us = await fetch(
+    `${ENV.API_URL}/v1/users?ids=${ids.map(encodeHashId).join(',')}`
+  )
+    .then((res) => res.json())
+    .then((res) => res.data)
   if (us) return us
   throw new Error(`Failed to get users: ${ids}`)
 }
 
 export const getUserByHandle = async (handle: string): Promise<UserModel> => {
   const u = await fetch(`${ENV.API_URL}/v1/users/handle/${handle}`)
-    .then(res => res.json())
-    .then(res => res.data)
+    .then((res) => res.json())
+    .then((res) => res.data)
   if (u) return u
   throw new Error(`Failed to get user ${handle}`)
 }
@@ -155,7 +166,7 @@ export const getExploreInfo = (type: string): ExploreInfoType => {
  */
 export const shuffle = (a: any[]) => {
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)) as number
+    const j = Math.floor(Math.random() * (i + 1)) as number;
     [a[i], a[j]] = [a[j], a[i]]
   }
   return a
@@ -164,7 +175,8 @@ export const shuffle = (a: any[]) => {
 // Optionally redirect certain tracks to 404
 const REDIRECT_TRACK_ID_RANGE = [416972, 418372]
 export const shouldRedirectTrack = (trackId: number) =>
-  trackId >= REDIRECT_TRACK_ID_RANGE[0] && trackId <= REDIRECT_TRACK_ID_RANGE[1]
+  trackId >= REDIRECT_TRACK_ID_RANGE[0] &&
+  trackId <= REDIRECT_TRACK_ID_RANGE[1]
 
 /**
  * Generate a short base36 hash for a given string.
