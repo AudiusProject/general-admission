@@ -141,7 +141,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
   if (!handle) return getDefaultContext()
   try {
     const user = await getUserByHandle(handle)
-    const encodedUserId = encodeHashId(user.user_id)
+    const userId = user.id
 
     const profilePicture = user.profile_picture?.['1000x1000']
 
@@ -156,7 +156,7 @@ const getUserContext = async (handle: string): Promise<Context> => {
       description: truncateDescription(user.bio || '', 100),
       additionalSEOHint: infoText,
       image: profilePicture ?? DEFAULT_IMAGE_URL,
-      entityId: encodedUserId ?? undefined,
+      entityId: userId || undefined,
     }
   } catch (e) {
     console.error(e)
@@ -207,9 +207,8 @@ const getCollectibleContext = async (
         ? `Listen to ${user.name} on Audius`
         : `Follow ${user.name} on Audius`
 
-    const encodedUserId = encodeHashId(user.user_id)
     const res = await fetch(
-      `${E.API_URL}/v1/users/associated_wallets?id=${encodedUserId}`
+      `${E.API_URL}/v1/users/associated_wallets?id=${user.id}`
     )
     const { data: walletData } = await res.json()
 
@@ -487,7 +486,12 @@ const getResponse = async (
   }
 
   // Only use OG URLs in staging environment
-  if (ogFormatMap[context.format] && E.OG_URL && E.OG_URL.includes('staging')) {
+  if (
+    ogFormatMap[context.format] &&
+    E.OG_URL &&
+    E.OG_URL.includes('staging') &&
+    context.entityId
+  ) {
     context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
       context.entityId
     }`

@@ -15,7 +15,8 @@
     "lint": "./node_modules/.bin/tslint 'src/**/*.ts'",
     "lint:fix": "./node_modules/.bin/tslint 'src/**/*.ts' --fix",
     "test:stage": "env-cmd -f .env.stage jest",
-    "test:prod": "env-cmd -f .env.prod jest"
+    "test:prod": "env-cmd -f .env.prod jest",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
