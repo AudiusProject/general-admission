@@ -485,13 +485,7 @@ const getResponse = async (
     [MetaTagFormat.Comment]: 'comment',
   }
 
-  // Only use OG URLs in staging environment
-  if (
-    ogFormatMap[context.format] &&
-    E.OG_URL &&
-    E.OG_URL.includes('staging') &&
-    context.entityId
-  ) {
+  if (ogFormatMap[context.format] && E.OG_URL && context.entityId) {
     context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
       context.entityId
     }`
