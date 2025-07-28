@@ -8,6 +8,7 @@ gigabot
 ia_archiver
 linkbot
 linkedinbot
+meta-externalfetcher
 msnbot
 nextgensearchbot
 reaper
