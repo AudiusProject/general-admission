@@ -5,6 +5,7 @@ import path from 'path'
 import './fetch-polyfill'
 import { startup } from './onStartup'
 import { MetaTagFormat } from './servlets/metaTags/types'
+import { APP_ROUTES } from './servlets/utils/constants'
 
 import getMetaTagsResponse from './servlets/metaTags'
 import { router as proxyRouter } from './servlets/proxy'
@@ -65,6 +66,10 @@ router.get('/audio', (req: express.Request, res: express.Response) => {
   getMetaTagsResponse(MetaTagFormat.AUDIO, req, res)
 })
 
+router.get('/rewards', (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.AUDIO, req, res)
+})
+
 router.get(
   [
     '/:handle',
@@ -75,7 +80,14 @@ router.get(
   ],
   (req: express.Request, res: express.Response) => {
     const { handle } = req.params
-    if (handle.trim() === 'download') {
+    const trimmedHandle = handle.trim()
+
+    // Check if this is an app route that should not be treated as a user handle
+    if (APP_ROUTES.includes(trimmedHandle)) {
+      return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    }
+
+    if (trimmedHandle === 'download') {
       return getMetaTagsResponse(MetaTagFormat.DownloadApp, req, res)
     }
     getMetaTagsResponse(MetaTagFormat.User, req, res)
@@ -83,27 +95,59 @@ router.get(
 )
 
 router.get(
-  ['/:handle/collectibles/:collectibleId'],
+  ['/:handle/collectibles'],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Collectible, req, res)
+    const { handle } = req.params
+    const trimmedHandle = handle.trim()
+
+    // Check if this is an app route that should not be treated as a user handle
+    if (APP_ROUTES.includes(trimmedHandle)) {
+      return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    }
+
+    getMetaTagsResponse(MetaTagFormat.Collectibles, req, res)
   }
 )
 
 router.get(
-  ['/:handle/collectibles', '/:handle/audio-nft-playlist'],
+  ['/:handle/collectibles/:collectibleId'],
   (req: express.Request, res: express.Response) => {
-    getMetaTagsResponse(MetaTagFormat.Collectibles, req, res)
+    const { handle } = req.params
+    const trimmedHandle = handle.trim()
+
+    // Check if this is an app route that should not be treated as a user handle
+    if (APP_ROUTES.includes(trimmedHandle)) {
+      return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    }
+
+    getMetaTagsResponse(MetaTagFormat.Collectible, req, res)
   }
 )
 
 router.get(
   '/:handle/:title/remixes',
   (req: express.Request, res: express.Response) => {
+    const { handle } = req.params
+    const trimmedHandle = handle.trim()
+
+    // Check if this is an app route that should not be treated as a user handle
+    if (APP_ROUTES.includes(trimmedHandle)) {
+      return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    }
+
     getMetaTagsResponse(MetaTagFormat.Remixes, req, res)
   }
 )
 
 router.get('/:handle/:title', (req: express.Request, res: express.Response) => {
+  const { handle } = req.params
+  const trimmedHandle = handle.trim()
+
+  // Check if this is an app route that should not be treated as a user handle
+  if (APP_ROUTES.includes(trimmedHandle)) {
+    return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+  }
+
   getMetaTagsResponse(
     req.query.commentId ? MetaTagFormat.Comment : MetaTagFormat.Track,
     req,
@@ -114,6 +158,14 @@ router.get('/:handle/:title', (req: express.Request, res: express.Response) => {
 router.get(
   ['/:handle/album/:title', '/:handle/playlist/:title'],
   (req: express.Request, res: express.Response) => {
+    const { handle } = req.params
+    const trimmedHandle = handle.trim()
+
+    // Check if this is an app route that should not be treated as a user handle
+    if (APP_ROUTES.includes(trimmedHandle)) {
+      return getMetaTagsResponse(MetaTagFormat.Default, req, res)
+    }
+
     getMetaTagsResponse(MetaTagFormat.Collection, req, res)
   }
 )

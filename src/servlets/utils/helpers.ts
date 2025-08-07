@@ -1,11 +1,6 @@
 import { FullTrack, Track, TrackModel } from '../../types/Track'
 import { FullUser, UserModel } from '../../types/User'
-import {
-  DEFAULT_IMAGE_URL,
-  ExploreInfoType,
-  exploreMap,
-  USER_NODE_IPFS_GATEWAY,
-} from './constants'
+import { DEFAULT_IMAGE_URL, USER_NODE_IPFS_GATEWAY } from './constants'
 import { encodeHashId } from './hashids'
 
 const ENV = process.env
@@ -148,16 +143,13 @@ export const getUserByHandle = async (handle: string): Promise<UserModel> => {
   throw new Error(`Failed to get user ${handle}`)
 }
 
-export const getExploreInfo = (type: string): ExploreInfoType => {
-  if (!Object.keys(exploreMap).includes(type)) {
-    return {
-      title: 'Just For You',
-      description: `Content curated for you based on your likes, reposts, and follows.
+export const getExploreInfo = (type: string): any => {
+  return {
+    title: 'Just For You',
+    description: `Content curated for you based on your likes, reposts, and follows.
                     Refreshes often so if you like a track, favorite it.`,
-      image: DEFAULT_IMAGE_URL,
-    }
+    image: DEFAULT_IMAGE_URL,
   }
-  return exploreMap[type]
 }
 
 /**
@@ -166,8 +158,10 @@ export const getExploreInfo = (type: string): ExploreInfoType => {
  */
 export const shuffle = (a: any[]) => {
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)) as number;
-    [a[i], a[j]] = [a[j], a[i]]
+    const j = Math.floor(Math.random() * (i + 1)) as number
+    const temp = a[i]
+    a[i] = a[j]
+    a[j] = temp
   }
   return a
 }
