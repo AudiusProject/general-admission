@@ -28,6 +28,25 @@ export const SIGNUP_REF_IMAGE_URL =
   'https://download.audius.co/static-resources/signup_referral.png'
 export const USER_NODE_IPFS_GATEWAY = 'https://usermetadata.audius.co/ipfs/'
 
+// App routes that should not be treated as user handles
+export const APP_ROUTES = [
+  'download',
+  'upload',
+  'explore',
+  'trending',
+  'check',
+  'undefined',
+  'press',
+  'audio',
+  'signup',
+  'error',
+  'health_check',
+  'proxy',
+  'social',
+  'apple-app-site-association',
+  '204',
+] as readonly string[]
+
 export interface ExploreInfoType {
   title: string
   description: string
@@ -100,6 +119,6 @@ export const exploreMap: { [key: string]: ExploreInfoType } = {
   'premium-tracks': {
     title: 'Premium Tracks',
     description: 'Explore premium music available to purchase.',
-    image: PREMIUM_TRACKS
-  }
+    image: PREMIUM_TRACKS,
+  },
 }
