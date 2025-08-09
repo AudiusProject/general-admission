@@ -15,7 +15,6 @@ import {
   formatSeconds,
   truncateDescription,
 } from '../utils/format'
-import { encodeHashId } from '../utils/hashids'
 import {
   getCollectionByHandleAndSlug,
   getCommentDataById,
@@ -26,7 +25,7 @@ import {
 } from '../utils/helpers'
 import { Context, MetaTagFormat, Playable } from './types'
 
-const CAN_EMBED_USER_AGENT_REGEX = /(twitter|discord)/
+const CAN_EMBED_USER_AGENT_REGEX = /(twitter|discord|reddit|iframely)/
 const RELEASE_DATE_FORMAT = 'ddd MMM DD YYYY HH:mm:ss GMTZZ'
 
 const E = process.env
@@ -475,7 +474,8 @@ const getResponse = async (
   }
 
   context.appUrl = `audius:/${req.url}`
-  context.webUrl = `https://audius.co${req.url}`
+  context.webUrl = `${E.PUBLIC_URL}${req.url}`
+  context.oembedUrl = `${E.PUBLIC_URL}/oembed`
 
   // Add OG image URL based on the format
   const ogFormatMap: Partial<Record<MetaTagFormat, string>> = {

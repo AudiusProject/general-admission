@@ -53,13 +53,13 @@
         <meta name="twitter:player" content="{{{embedUrl}}}" />
         <meta name="twitter:player:width" content="480" />
         <meta name="twitter:player:height" content="480" />
-
-        <link rel="alternate" type="application/oembed+json" href="https://audius.co/oembed?url={{webUrl}}&format=json" title="{{title}}" />
       {{else}}
         <meta name="twitter:card" content="summary_large_image"/ >
       {{/if}}
     {{/if}}
-
+    {{#if embed}}
+      <link rel="alternate" type="application/json+oembed" href="{{oembedUrl}}?url={{webUrl}}&format=json" title="{{title}}" />
+    {{/if}}
   </head>
   <body style='display: flex; flex-direction: column; align-items: center; text-align: center; font-size: 40px;'>
     <img height='400' src='{{image}}' alt='artwork' />

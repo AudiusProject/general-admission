@@ -38,6 +38,8 @@ export interface Context {
   embed?: boolean
   // Bedtime player url
   embedUrl?: string
+  // OEmbed root url
+  oembedUrl?: string
 
   tags?: string[]
   labels?: Array<{ name: string; value: string }>
