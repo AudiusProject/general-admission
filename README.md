@@ -25,7 +25,7 @@ cp .env.stage .env # or .env.prod
 docker compose up --build -d
 ```
 
-visit http://localhost:9000.
+visit http://localhost:9001 (it may be 9000, check by running `docker ps`).
 
 and to stop it:
 

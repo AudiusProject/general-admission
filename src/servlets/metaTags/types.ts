@@ -13,6 +13,7 @@ export enum MetaTagFormat {
   SignupRef,
   DownloadApp,
   Comment,
+  Coin,
 }
 
 export enum Playable {

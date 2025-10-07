@@ -15,12 +15,15 @@ import {
   formatSeconds,
   truncateDescription,
 } from '../utils/format'
+import { decodeHashId } from '../utils/hashids'
 import {
+  getCoinByTicker,
   getCollectionByHandleAndSlug,
   getCommentDataById,
   getExploreInfo,
   getHash,
   getTrackByHandleAndSlug,
+  getUser,
   getUserByHandle,
 } from '../utils/helpers'
 import { Context, MetaTagFormat, Playable } from './types'
@@ -392,12 +395,35 @@ const getCommentContext = async (
   }
 }
 
+const getCoinContext = async (ticker: string): Promise<Context> => {
+  if (!ticker) return getDefaultContext()
+  try {
+    const coin = await getCoinByTicker(ticker)
+    const user = await getUser(coin.owner_id)
+
+    const coinName = coin.name
+    const handle = user.handle
+
+    return {
+      format: MetaTagFormat.Coin,
+      title: `${coinName} ($${ticker}) • Audius`,
+      description: `${coinName} ($${ticker}) is an artist coin created by @${handle} on Audius`,
+      image: DEFAULT_IMAGE_URL,
+      entityId: ticker,
+    }
+  } catch (e) {
+    console.error(e)
+    return getDefaultContext()
+  }
+}
+
 const getResponse = async (
   format: MetaTagFormat,
   req: express.Request,
   res: express.Response
 ) => {
-  const { title, handle, type, collectibleId } = req.params
+  const { title, handle, type, collectibleId, ticker } = req.params
+  console.log('ticker', ticker)
   const { ref, rf, commentId } = req.query
 
   const userAgent = req.get('User-Agent') || ''
@@ -467,6 +493,10 @@ const getResponse = async (
       console.log('get comment', req.path, userAgent)
       context = await getCommentContext(commentId as string, handle, title)
       break
+    case MetaTagFormat.Coin:
+      console.log('get coin', req.path, ticker, userAgent)
+      context = await getCoinContext(ticker)
+      break
     case MetaTagFormat.Error:
     default:
       console.log('get default', req.path, userAgent)
@@ -483,12 +513,15 @@ const getResponse = async (
     [MetaTagFormat.Track]: 'track',
     [MetaTagFormat.Collection]: 'collection',
     [MetaTagFormat.Comment]: 'comment',
+    [MetaTagFormat.Coin]: 'coin',
   }
 
   if (ogFormatMap[context.format] && E.OG_URL && context.entityId) {
     context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
       context.entityId
     }`
+
+    console.log('context.image', context.image)
   }
 
   const html = template(context)

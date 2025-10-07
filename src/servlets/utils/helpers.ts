@@ -13,54 +13,6 @@ export const getTracks = async (ids: number[]): Promise<TrackModel[]> => {
   throw new Error(`Failed to get tracks ${ids}`)
 }
 
-const userModelToFullUser = (user: UserModel): FullUser => {
-  return {
-    ...user,
-    id: user.id,
-    cover_photo_legacy: null,
-    profile_picture_legacy: null,
-  }
-}
-
-const trackModelToFullTrack = async (track: TrackModel): Promise<FullTrack> => {
-  const user: UserModel = await getUser(track.owner_id)
-
-  const releaseDate = track.release_date
-    ? track.release_date
-    : track.created_at
-  const duration = track.track_segments.reduce(
-    (acc: number, v) => (acc = acc + v.duration),
-    0
-  )
-
-  // Map remix_of and stem_of to FullTrack
-  const remixOf = track.remix_of
-    ? {
-        tracks: track.remix_of.tracks.map((t) => ({
-          ...t,
-          parent_track_id: encodeHashId(t.parent_track_id)!,
-          user: userModelToFullUser(user),
-        })),
-      }
-    : null
-  const stemOf = { category: null, parent_track_id: null }
-
-  return {
-    ...track,
-    id: encodeHashId(track.track_id)!,
-    user: userModelToFullUser(user),
-    artwork: track.artwork,
-    release_date: releaseDate,
-    duration,
-    remix_of: remixOf,
-    stem_of: stemOf,
-    favorite_count: track.save_count,
-    downloadable: track.download.is_downloadable,
-    followee_favorites: track.followee_saves,
-    user_id: encodeHashId(track.owner_id)!,
-  }
-}
-
 export const getTrackByHandleAndSlug = async (
   handle: string,
   slug: string
@@ -116,12 +68,11 @@ export const getCollectionByHandleAndSlug = async (
   return playlist
 }
 
-export const getUser = async (id: number): Promise<UserModel> => {
-  const u = await fetch(`${ENV.API_URL}/v1/users?ids=${encodeHashId(id)}`)
+export const getUser = async (id: string): Promise<UserModel> => {
+  const u = await fetch(`${ENV.API_URL}/v1/users/${id}`)
     .then((res) => res.json())
     .then((res) => res.data)
-    .then((res) => res[0])
-  if (u && u[0]) return u[0]
+  if (u) return u
   throw new Error(`Failed to get user ${id}`)
 }
 
@@ -141,6 +92,13 @@ export const getUserByHandle = async (handle: string): Promise<UserModel> => {
     .then((res) => res.data)
   if (u) return u
   throw new Error(`Failed to get user ${handle}`)
+}
+
+export const getCoinByTicker = async (ticker: string): Promise<any> => {
+  const res = await fetch(`${ENV.API_URL}/v1/coins/ticker/${ticker}`)
+  const { data } = await res.json()
+  if (data) return data
+  throw new Error(`Failed to get coin ${ticker}`)
 }
 
 export const getExploreInfo = (type: string): any => {
