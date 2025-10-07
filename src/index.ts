@@ -70,6 +70,10 @@ router.get('/rewards', (req: express.Request, res: express.Response) => {
   getMetaTagsResponse(MetaTagFormat.AUDIO, req, res)
 })
 
+router.get('/coins/:ticker', (req: express.Request, res: express.Response) => {
+  getMetaTagsResponse(MetaTagFormat.Coin, req, res)
+})
+
 router.get(
   [
     '/:handle',
