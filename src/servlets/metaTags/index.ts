@@ -423,7 +423,6 @@ const getResponse = async (
   res: express.Response
 ) => {
   const { title, handle, type, collectibleId, ticker } = req.params
-  console.log('ticker', ticker)
   const { ref, rf, commentId } = req.query
 
   const userAgent = req.get('User-Agent') || ''
@@ -520,8 +519,6 @@ const getResponse = async (
     context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
       context.entityId
     }`
-
-    console.log('context.image', context.image)
   }
 
   const html = template(context)
