@@ -15,7 +15,6 @@ import {
   formatSeconds,
   truncateDescription,
 } from '../utils/format'
-import { decodeHashId } from '../utils/hashids'
 import {
   getCoinByTicker,
   getCollectionByHandleAndSlug,
@@ -395,6 +394,17 @@ const getCommentContext = async (
   }
 }
 
+const getCoinsContext = (): Context => {
+  return {
+    format: MetaTagFormat.Coins,
+    title: 'Artist Coins • Audius',
+    description:
+      'Discover Artist Coins on Audius. Support your favorite artists and unlock exclusive benefits.',
+    image: DEFAULT_IMAGE_URL,
+    thumbnail: false,
+  }
+}
+
 const getCoinContext = async (ticker: string): Promise<Context> => {
   if (!ticker) return getDefaultContext()
   try {
@@ -492,6 +502,10 @@ const getResponse = async (
       console.log('get comment', req.path, userAgent)
       context = await getCommentContext(commentId as string, handle, title)
       break
+    case MetaTagFormat.Coins:
+      console.log('get coins', req.path, userAgent)
+      context = getCoinsContext()
+      break
     case MetaTagFormat.Coin:
       console.log('get coin', req.path, ticker, userAgent)
       context = await getCoinContext(ticker)
@@ -513,12 +527,17 @@ const getResponse = async (
     [MetaTagFormat.Collection]: 'collection',
     [MetaTagFormat.Comment]: 'comment',
     [MetaTagFormat.Coin]: 'coin',
+    [MetaTagFormat.Coins]: 'coins',
   }
 
-  if (ogFormatMap[context.format] && E.OG_URL && context.entityId) {
-    context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
-      context.entityId
-    }`
+  if (ogFormatMap[context.format] && E.OG_URL) {
+    if (context.format === MetaTagFormat.Coins) {
+      context.image = `${E.OG_URL}/coins`
+    } else if (context.entityId) {
+      context.image = `${E.OG_URL}/${ogFormatMap[context.format]}/${
+        context.entityId
+      }`
+    }
   }
 
   const html = template(context)

@@ -14,6 +14,7 @@ export enum MetaTagFormat {
   DownloadApp,
   Comment,
   Coin,
+  Coins,
 }
 
 export enum Playable {
